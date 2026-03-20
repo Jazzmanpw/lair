@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Remove",
+  "title": "Remove",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "Project name (e.g., @lair/storybook-helpers)",
+      "$default": {"$source": "argv", "index": 0}
+    },
+    "force": {
+      "type": "boolean",
+      "default": false,
+      "description": "Proceed even if imports still exist in the codebase"
+    }
+  },
+  "required": ["project"]
+}

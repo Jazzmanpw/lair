@@ -1,0 +1,8 @@
+{
+  "extends": "<%= relativeToRoot %>tsconfig.node.json",
+  "include": ["vite.config.ts"<% if (type === 'react' && !skipStorybook) { %>, ".storybook/main.ts"<% } %>],
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "<%= relativeToRoot %>dist/types-node/<%= name %>"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Library",
+  "title": "Library",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Library path (e.g., libs/ui-kit)",
+      "$default": {"$source": "argv", "index": 0}
+    },
+    "type": {
+      "type": "string",
+      "enum": ["react", "node", "shared"],
+      "default": "react",
+      "description": "Library type (react includes storybook, node/shared are simpler)"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Comma-separated tags for linting boundaries"
+    },
+    "skipStorybook": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip storybook setup (for utility libs that don't need stories)"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Preview changes without writing files"
+    }
+  },
+  "required": ["path"]
+}

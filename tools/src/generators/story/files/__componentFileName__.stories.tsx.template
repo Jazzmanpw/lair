@@ -1,0 +1,19 @@
+import type {Meta, StoryObj} from '@storybook/react-vite';
+<% if (hasComponent) { %>import <%= componentName %><% if (propsTypeName) { %>, {type <%= propsTypeName %>}<% } %> from './<%= componentFileName %>.tsx';
+
+type StoryArgs = <% if (propsTypeName) { %><%= propsTypeName %><% } else { %>Record<string, never><% } %>;
+<% } else { %>
+type StoryArgs = Record<string, never>;
+<% } %>
+const meta = {
+  title: '<%= title %>',
+<% if (hasComponent) { %>  component: <%= componentName %>,<% } else { %>  component() {
+    return null;
+  },<% } %>
+} satisfies Meta<StoryArgs>;
+
+export default meta;
+
+type Story = StoryObj<StoryArgs>;
+
+export const Default: Story = {};

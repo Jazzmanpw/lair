@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Component",
+  "title": "Component",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Path to the component .tsx file",
+      "$default": {"$source": "argv", "index": 0}
+    },
+    "skipProps": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip generating a props type"
+    },
+    "story": {
+      "type": "boolean",
+      "default": false,
+      "description": "Also generate a story file",
+      "alias": "s"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Preview changes without writing files"
+    }
+  },
+  "required": ["path"]
+}

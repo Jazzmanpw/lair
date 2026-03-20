@@ -1,0 +1,4 @@
+export type <%= className %>GeneratorSchema = {
+  path: string;
+  dryRun?: boolean;
+};

@@ -1,0 +1,8 @@
+<% if (propsTypeName) { %>export type <%= propsTypeName %> = {
+  //
+};
+
+export default function <%= componentName %>({}: <%= propsTypeName %>) {
+<% } else { %>export default function <%= componentName %>() {
+<% } %>  return null;
+}

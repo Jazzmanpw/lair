@@ -1,0 +1,10 @@
+{
+  "name": "<%= packageName %>",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {}<% if (parsedTags.length > 0) { %>,
+  "nx": {
+    "tags": <%- JSON.stringify(parsedTags) %>
+  }<% } %>
+}

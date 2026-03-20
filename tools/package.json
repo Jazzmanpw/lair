@@ -1,0 +1,21 @@
+{
+  "name": "@lair/tools",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "generators": "./generators.json",
+  "plugin": "./src/plugin.ts",
+  "nx": {
+    "projectType": "library"
+  },
+  "imports": {
+    "#utils/*": "./src/utils/*"
+  },
+  "exports": {
+    "./plugin": "./src/plugin-shim.cjs",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@nx/devkit": "22.5.2"
+  }
+}

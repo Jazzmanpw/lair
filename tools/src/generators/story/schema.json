@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Story",
+  "title": "Story",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Path to component .tsx file or .stories.tsx file",
+      "$default": {"$source": "argv", "index": 0}
+    },
+    "title": {
+      "type": "string",
+      "description": "Story title override"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Preview changes without writing files"
+    }
+  },
+  "required": ["path"]
+}

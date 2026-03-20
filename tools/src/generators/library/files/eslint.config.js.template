@@ -1,0 +1,3 @@
+import baseConfig from '<%= relativeToRoot %>eslint.config.js';
+
+export default baseConfig;

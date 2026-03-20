@@ -1,0 +1,21 @@
+{
+  "$id": "Generator",
+  "title": "Create Generator",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Generator name (e.g., lib)",
+      "$default": {"$source": "argv", "index": 0}
+    },
+    "description": {
+      "type": "string",
+      "description": "Generator description for generators.json"
+    },
+    "alias": {
+      "type": "string",
+      "description": "Short alias for the generator (e.g., l for lib)"
+    }
+  },
+  "required": ["name"]
+}

@@ -1,0 +1,89 @@
+/// <reference types="vitest/config" />
+<% if (type === 'react' && !skipStorybook) { %>import {storybookTest} from '@storybook/addon-vitest/vitest-plugin';
+<% } %><% if (type === 'react') { %>import react from '@vitejs/plugin-react';
+<% } %><% if (type === 'react' && !skipStorybook) { %>import {playwright} from '@vitest/browser-playwright';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+<% } %>import {defineConfig} from 'vite';
+<% if (type === 'react' && !skipStorybook) { %>
+const dirname =
+  typeof __dirname !== 'undefined'
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
+<% } %>
+export default defineConfig({
+<% if (type === 'react') { %>  plugins: [
+    react({
+      babel: {
+        plugins: [
+          [
+            '@emotion',
+            {
+              importMap: {
+                '@mui/system': {
+                  styled: {
+                    canonicalImport: ['@emotion/styled', 'default'],
+                    styledBaseImport: ['@mui/system', 'styled'],
+                  },
+                },
+                '@mui/material': {
+                  styled: {
+                    canonicalImport: ['@emotion/styled', 'default'],
+                    styledBaseImport: ['@mui/material', 'styled'],
+                  },
+                },
+                '@mui/material/styles': {
+                  styled: {
+                    canonicalImport: ['@emotion/styled', 'default'],
+                    styledBaseImport: ['@mui/material/styles', 'styled'],
+                  },
+                },
+              },
+            },
+          ],
+        ],
+      },
+    }),
+  ],
+  optimizeDeps: {
+    include: [
+      '@emotion/react/jsx-dev-runtime',
+      'launchdarkly-react-client-sdk',
+    ],
+  },
+<% } %>  test: {
+    passWithNoTests: true,
+<% if (type === 'react' && !skipStorybook) { %>    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'jsdom',
+          include: ['src/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
+        extends: true,
+        plugins: [
+          storybookTest({
+            configDir: path.join(dirname, '.storybook'),
+          }),
+        ],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: playwright({}),
+            instances: [{browser: 'chromium'}],
+          },
+          setupFiles: ['.storybook/vitest.setup.ts'],
+        },
+      },
+    ],
+<% } else if (type === 'react') { %>    environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
+<% } else { %>    environment: 'node',
+    include: ['src/**/*.test.ts'],
+<% } %>  },
+});

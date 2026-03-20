@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "Move",
+  "title": "Move",
+  "type": "object",
+  "properties": {
+    "source": {
+      "type": "string",
+      "description": "Current project path (e.g., libs/old-name)",
+      "alias": "s"
+    },
+    "destination": {
+      "type": "string",
+      "description": "New project path (e.g., libs/new-name)",
+      "alias": "d"
+    },
+    "clearDestination": {
+      "type": "boolean",
+      "default": false,
+      "description": "Delete destination directory if it already exists"
+    }
+  },
+  "required": ["source", "destination"]
+}

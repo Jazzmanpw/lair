@@ -1,0 +1,20 @@
+import {Tree} from '@nx/devkit';
+import {resolvePath} from '#utils/resolve-path.ts';
+import {<%= className %>GeneratorSchema} from '../schema.ts';
+
+export type NormalizedOptions = <%= className %>GeneratorSchema & {
+  // Add derived options here
+};
+
+export function normalizeOptions(
+  _tree: Tree,
+  schema: <%= className %>GeneratorSchema,
+): NormalizedOptions {
+  const path = resolvePath(schema.path);
+
+  return {
+    ...schema,
+    path,
+    // Derive additional options here
+  };
+}

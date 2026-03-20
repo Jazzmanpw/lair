@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "<%= className %>",
+  "title": "<%= className %>",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string",
+      "description": "Target path",
+      "$default": { "$source": "argv", "index": 0 }
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": false,
+      "description": "Preview changes without writing files"
+    }
+  },
+  "required": ["path"]
+}

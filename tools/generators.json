@@ -1,0 +1,39 @@
+{
+  "generators": {
+    "generator": {
+      "factory": "./src/generators/generator/generator",
+      "schema": "./src/generators/generator/schema.json",
+      "description": "Create a new generator",
+      "aliases": ["g"]
+    },
+    "library": {
+      "factory": "./src/generators/library/generator",
+      "schema": "./src/generators/library/schema.json",
+      "description": "Create library",
+      "aliases": ["lib"]
+    },
+    "move": {
+      "factory": "./src/generators/move/generator",
+      "schema": "./src/generators/move/schema.json",
+      "description": "Move a project to another directory",
+      "aliases": ["mv"]
+    },
+    "remove": {
+      "factory": "./src/generators/remove/generator",
+      "schema": "./src/generators/remove/schema.json",
+      "description": "Remove a project",
+      "aliases": ["rm"]
+    },
+    "story": {
+      "factory": "./src/generators/story/generator",
+      "schema": "./src/generators/story/schema.json",
+      "description": "Create a story file"
+    },
+    "component": {
+      "factory": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Create a component",
+      "aliases": ["c"]
+    }
+  }
+}
