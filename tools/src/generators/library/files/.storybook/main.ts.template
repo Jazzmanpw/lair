@@ -1,7 +1,6 @@
 import type {StorybookConfig} from '@storybook/react-vite';
 import {createRequire} from 'node:module';
 import {dirname, join} from 'node:path';
-import {mergeConfig} from 'vite';
 
 const require = createRequire(import.meta.url);
 
@@ -15,18 +14,6 @@ const config: StorybookConfig = {
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
     options: {},
-  },
-  staticDirs: [
-    join(getAbsolutePath('@omni/storybook-helpers'), 'storybook-static'),
-  ],
-  viteFinal(config) {
-    return mergeConfig(config, {
-      resolve: {
-        alias: {
-          'launchdarkly-react-client-sdk': '@omni/storybook-helpers/ld-mock',
-        },
-      },
-    });
   },
 };
 

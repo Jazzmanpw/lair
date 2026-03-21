@@ -3,10 +3,10 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/lair"
+      "path": "./tools"
     },
     {
-      "path": "./tools"
+      "path": "./libs/domain"
     }
   ]
 }

@@ -5,8 +5,7 @@
     "outDir": "<%= relativeToRoot %>dist/types/<%= name %>",
     "rootDir": "<% if (type === 'react' && !skipStorybook) { %>.<% } else { %>./src<% } %>",
     "emitDeclarationOnly": true<% if (type === 'react') { %>,
-    "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react"<% } %><% if (type === 'node') { %>,
+    "jsx": "react-jsx"<% } %><% if (type === 'node') { %>,
     "types": ["node"]<% } %>
   },
   "include": ["src"<% if (type === 'react' && !skipStorybook) { %>, ".storybook/preview.tsx", ".storybook/vitest.setup.ts"<% } %>]

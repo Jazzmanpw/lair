@@ -33,6 +33,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.0.2",
     "@eslint/js": "^9.39.4",
     "@nx/devkit": "22.5.2",
     "@nx/eslint": "22.5.2",
@@ -40,6 +41,8 @@
     "@nx/js": "22.5.2",
     "@nx/vite": "22.5.2",
     "@nx/web": "22.5.2",
+    "@storybook/addon-a11y": "^10.3.1",
+    "@storybook/addon-vitest": "^10.3.1",
     "@swc-node/register": "^1.11.1",
     "@swc/core": "^1.15.18",
     "@tailwindcss/typography": "^0.5.19",
@@ -50,6 +53,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/browser-playwright": "^4.1.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -61,6 +65,7 @@
     "jsdom": "^28.1.0",
     "lint-staged": "^16.4.0",
     "nx": "22.5.2",
+    "playwright": "^1.58.2",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1",
