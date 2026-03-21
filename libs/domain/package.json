@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     "./scene": "./src/scene.ts",
-    "./creature": "./src/creature.ts"
+    "./creature": "./src/creature.ts",
+    "./fixtures/scenes": "./src/fixtures/scenes.ts",
+    "./fixtures/creatures": "./src/fixtures/creatures.ts"
   }
 }
