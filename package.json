@@ -76,5 +76,6 @@
     "singleQuote": true,
     "trailingComma": "all",
     "bracketSpacing": false
-  }
+  },
+  "packageManager": "npm@10.9.0"
 }
