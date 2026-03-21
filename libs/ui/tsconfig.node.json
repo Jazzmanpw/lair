@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.node.json",
+  "include": ["vite.config.ts", ".storybook/main.ts"],
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "../../dist/types-node/ui"
+  }
+}
