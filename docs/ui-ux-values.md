@@ -35,7 +35,7 @@ Backgrounds use a green-shifted dark tone (mossy stone), not blue-ish:
 #### Text Colors (configurable via Storybook globals)
 
 - **Primary text**: `#d4cbb8` (Warmer, default) or `#dcd8cc` (Brighter)
-- **Secondary/dim text**: `#7a7e88` (Cool dim, default) or `#9a9080` (Warm dim)
+- **Secondary/dim text**: `#abacb5` (Lighter cool dim, default), `#7a7e88` (Cool dim), or `#9a9080` (Warm dim)
 - **Bright/emphasis text**: `#e8e4d8` (fixed, headings and active labels)
 
 ### Dark Mode First

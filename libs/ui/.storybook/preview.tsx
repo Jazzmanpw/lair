@@ -28,6 +28,7 @@ const preview: Preview = {
       toolbar: {
         icon: 'eye',
         items: [
+          {value: '#abacb5', title: 'Lighter cool dim'},
           {value: '#7a7e88', title: 'Cool dim'},
           {value: '#9a9080', title: 'Warm dim'},
         ],
@@ -49,7 +50,7 @@ const preview: Preview = {
   },
   initialGlobals: {
     textColor: '#d4cbb8',
-    dimColor: '#7a7e88',
+    dimColor: '#abacb5',
     font: '"Rubik", sans-serif',
     backgrounds: {
       value: 'lair-void',
@@ -61,7 +62,7 @@ const preview: Preview = {
         style={
           {
             '--lair-text': context.globals['textColor'] || '#d4cbb8',
-            '--lair-text-dim': context.globals['dimColor'] || '#7a7e88',
+            '--lair-text-dim': context.globals['dimColor'] || '#abacb5',
             '--lair-font': context.globals['font'] || '"Rubik", sans-serif',
           } as CSSProperties
         }
