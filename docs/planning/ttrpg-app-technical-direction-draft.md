@@ -86,20 +86,22 @@ storage, or sync-backed storage later.
 
 ### 5. Keep the frontend stack visually and technically simple
 
-Do not introduce a UI kit or styling framework for the first prototypes.
+Do not introduce a full UI kit or styling framework beyond what is needed.
 
 For the initial implementation:
 
-- use standard HTML elements wherever possible;
-- use plain CSS with simple class names;
-- use CSS Modules only if local scoping starts to matter;
-- avoid Tailwind, shadcn/ui, and similar abstraction layers in the prototype phase;
+- use Tailwind CSS for styling (adopted during iteration 1);
 - add focused utility libraries for specific interaction problems only when a
-  real need appears, for example popper/positioning helpers.
+  real need appears;
+- use Base UI (`@base-ui-components/react`) for unstyled, accessible
+  primitives — especially its floating-ui-backed Tooltip, Popover, and Menu
+  components for hover previews and contextual popups, which the app uses
+  heavily. Base UI provides the positioning, portal, and accessibility
+  plumbing without imposing visual opinions.
 
 This is a deliberate constraint. The goal is to evaluate information design,
 layout, and workflow behavior without spending early effort on design-system
-plumbing or utility-class architecture.
+plumbing.
 
 ### 6. Defer Convex as primary storage
 
@@ -136,8 +138,7 @@ These should not block the first implementation pass:
 - final canonical database: SQLite, PGlite, IndexedDB-first, or something else;
 - whether sync exists at all in v1;
 - whether Convex is used later for sync or not used at all;
-- whether a dedicated UI kit or styling framework is needed later;
-- which helper library to use for floating panels, popovers, or positioning;
+- whether a full dedicated UI kit is needed beyond Base UI primitives;
 - full relation engine design for inferred vs explicit links;
 - graph/map rendering stack;
 - rich text editor choice beyond what is needed for the first prototype;

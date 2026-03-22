@@ -8,5 +8,5 @@
     "jsx": "react-jsx"<% } %><% if (type === 'node') { %>,
     "types": ["node"]<% } %>
   },
-  "include": ["src"<% if (type === 'react' && !skipStorybook) { %>, ".storybook/preview.tsx", ".storybook/vitest.setup.ts"<% } %>]
+  "include": ["src"<% if (type === 'react' && !skipStorybook) { %>, ".storybook/preview.tsx"<% } %>]
 }

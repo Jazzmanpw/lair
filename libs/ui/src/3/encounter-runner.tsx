@@ -1,19 +1,24 @@
 import {useEffect, useRef, useState} from 'react';
+import type {CreatureStatblock as StatblockType} from '@lair/domain/creature';
 import type {Encounter} from '@lair/domain/scene';
+import CreatureStatblock from './creature-statblock.tsx';
 import Fpo from './fpo.tsx';
 
 export type EncounterRunnerProps = {
   encounter: Encounter;
+  statblocks?: Record<string, StatblockType>;
   onEnd?: () => void;
 };
 
 export default function EncounterRunner({
   encounter,
+  statblocks = {},
   onEnd,
 }: EncounterRunnerProps) {
   const creatureTabs = encounter.creatures.flatMap(({creature, count}) =>
     Array.from({length: count}, (_, i) => ({
       id: `${creature.id}-${i}`,
+      creatureId: creature.id,
       label: count > 1 ? `${creature.label} ${i + 1}` : creature.label,
     })),
   );
@@ -44,6 +49,9 @@ export default function EncounterRunner({
       document.removeEventListener('keydown', handleKey);
     };
   }, [showConflicts]);
+
+  const activeTab = creatureTabs.find((t) => t.id === activeCreature);
+  const activeStatblock = activeTab ? statblocks[activeTab.creatureId] : null;
 
   return (
     <div className="flex flex-col h-full bg-[#12170f] text-(--lair-text) font-(--lair-font) overflow-hidden">
@@ -107,11 +115,14 @@ export default function EncounterRunner({
 
       <div className="flex-1 grid grid-cols-[1fr_240px] overflow-hidden">
         <div className="overflow-auto p-4 px-5">
-          <div className="grid grid-cols-[3fr_1fr] gap-3 mb-3">
-            <Fpo style={{height: '200px'}}>
-              Creature Statblock —{' '}
-              {creatureTabs.find((t) => t.id === activeCreature)?.label}
-            </Fpo>
+          <div className="grid grid-cols-[3fr_2fr] gap-3 mb-3">
+            {activeStatblock ? (
+              <CreatureStatblock statblock={activeStatblock} />
+            ) : (
+              <Fpo style={{height: '200px'}}>
+                Creature Statblock — {activeTab?.label}
+              </Fpo>
+            )}
             <Fpo style={{height: '200px'}}>Actions & Abilities</Fpo>
           </div>
         </div>

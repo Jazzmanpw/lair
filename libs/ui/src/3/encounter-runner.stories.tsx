@@ -1,10 +1,13 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
+import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
 import {entranceScene} from '@lair/domain/fixtures/scenes';
 import EncounterRunner, {
   type EncounterRunnerProps,
 } from './encounter-runner.tsx';
 
 type StoryArgs = EncounterRunnerProps;
+
+const statblocks = {'khimera-tyangu': chimeraStatblock};
 
 const meta = {
   title: 'Iteration 3/Encounter Runner',
@@ -16,7 +19,7 @@ export default meta;
 type Story = StoryObj<StoryArgs>;
 
 export const Inline: Story = {
-  args: {encounter: entranceScene.encounter!},
+  args: {encounter: entranceScene.encounter!, statblocks},
   parameters: {layout: 'fullscreen'},
   decorators: [
     (Story) => (
@@ -33,7 +36,7 @@ export const Inline: Story = {
 };
 
 export const Fullscreen: Story = {
-  args: {encounter: entranceScene.encounter!},
+  args: {encounter: entranceScene.encounter!, statblocks},
   parameters: {layout: 'fullscreen'},
   decorators: [
     (Story) => (

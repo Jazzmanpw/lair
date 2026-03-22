@@ -1,9 +1,10 @@
 import {useState} from 'react';
+import type {CreatureStatblock} from '@lair/domain/creature';
 import type {Scene, SceneMeta} from '@lair/domain/scene';
+import EncounterRunner from './encounter-runner.tsx';
+import EncounterTab from './encounter-tab.tsx';
 import Fpo from './fpo.tsx';
 import ScenePreviewCard from './scene-preview-card.tsx';
-import EncounterTab from './encounter-tab.tsx';
-import EncounterRunner from './encounter-runner.tsx';
 
 export type LinkedSceneData = {
   meta: SceneMeta;
@@ -14,6 +15,7 @@ export type LinkedSceneData = {
 export type ScenePageLayoutProps = {
   scene: Scene;
   linkedScenes?: LinkedSceneData[];
+  statblocks?: Record<string, CreatureStatblock>;
 };
 
 type TabId = 'encounter' | 'skillChecks' | 'traps' | 'treasures';
@@ -27,6 +29,7 @@ type TabDef = {
 export default function ScenePageLayout({
   scene,
   linkedScenes = [],
+  statblocks = {},
 }: ScenePageLayoutProps) {
   const {
     meta,
@@ -158,11 +161,13 @@ export default function ScenePageLayout({
         {activeTab === 'encounter' && encounter && isRunning ? (
           <EncounterRunner
             encounter={encounter}
+            statblocks={statblocks}
             onEnd={() => setIsRunning(false)}
           />
         ) : activeTab === 'encounter' && encounter ? (
           <EncounterTab
             encounter={encounter}
+            statblocks={statblocks}
             onRun={() => setIsRunning(true)}
           />
         ) : (

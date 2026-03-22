@@ -1,10 +1,11 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import type {Scene, SceneMeta} from '@lair/domain/scene';
+import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
 import {
   brazierHallScene,
   entranceScene,
   morgueScene,
 } from '@lair/domain/fixtures/scenes';
+import type {Scene, SceneMeta} from '@lair/domain/scene';
 import ScenePageLayout, {
   type LinkedSceneData,
   type ScenePageLayoutProps,
@@ -63,10 +64,13 @@ export default meta;
 
 type Story = StoryObj<StoryArgs>;
 
+const statblocks = {'khimera-tyangu': chimeraStatblock};
+
 export const Default: Story = {
   args: {
     scene: entranceScene,
     linkedScenes: buildLinkedScenes(entranceScene),
+    statblocks,
   },
 };
 

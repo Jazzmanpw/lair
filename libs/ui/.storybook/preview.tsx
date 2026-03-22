@@ -2,6 +2,12 @@ import type {Preview} from '@storybook/react-vite';
 import type {CSSProperties} from 'react';
 import '../src/styles.css';
 
+const fontMap: Record<string, string> = {
+  rubik: '"Rubik", sans-serif',
+  'century-gothic': '"Century Gothic", sans-serif',
+  'nunito-sans': '"Nunito Sans", sans-serif',
+};
+
 const preview: Preview = {
   beforeEach: [
     ({canvasElement}) => {
@@ -40,9 +46,9 @@ const preview: Preview = {
       toolbar: {
         icon: 'document',
         items: [
-          {value: '"Rubik", sans-serif', title: 'Rubik'},
-          {value: '"Century Gothic", sans-serif', title: 'Century Gothic'},
-          {value: '"Nunito Sans", sans-serif', title: 'Nunito Sans'},
+          {value: 'rubik', title: 'Rubik'},
+          {value: 'century-gothic', title: 'Century Gothic'},
+          {value: 'nunito-sans', title: 'Nunito Sans'},
         ],
         dynamicTitle: true,
       },
@@ -51,7 +57,7 @@ const preview: Preview = {
   initialGlobals: {
     textColor: '#d4cbb8',
     dimColor: '#abacb5',
-    font: '"Rubik", sans-serif',
+    font: 'rubik',
     backgrounds: {
       value: 'lair-void',
     },
@@ -63,7 +69,8 @@ const preview: Preview = {
           {
             '--lair-text': context.globals['textColor'] || '#d4cbb8',
             '--lair-text-dim': context.globals['dimColor'] || '#abacb5',
-            '--lair-font': context.globals['font'] || '"Rubik", sans-serif',
+            '--lair-font':
+              fontMap[context.globals['font']] || '"Rubik", sans-serif',
           } as CSSProperties
         }
       >

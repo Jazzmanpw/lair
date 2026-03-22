@@ -1,5 +1,5 @@
-import tailwindcss from '@tailwindcss/vite';
 import type {StorybookConfig} from '@storybook/react-vite';
+import tailwindcss from '@tailwindcss/vite';
 import {createRequire} from 'node:module';
 import {dirname, join} from 'node:path';
 

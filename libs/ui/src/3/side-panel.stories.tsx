@@ -1,4 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
+import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
+import CreatureStatblock from './creature-statblock.tsx';
 import SidePanel, {type SidePanelProps} from './side-panel.tsx';
 
 type StoryArgs = SidePanelProps;
@@ -13,12 +15,17 @@ export default meta;
 
 type Story = StoryObj<StoryArgs>;
 
-export const CreatureStatblock: Story = {
+export const WithStatblock: Story = {
   args: {
     open: true,
-    title: 'Химера Тяньгу',
-    contentLabel: 'Creature Statblock',
+    title: chimeraStatblock.header.name,
   },
+  render: (args) => (
+    <SidePanel
+      {...args}
+      panelContent={<CreatureStatblock statblock={chimeraStatblock} />}
+    />
+  ),
 };
 
 export const TrapStatblock: Story = {

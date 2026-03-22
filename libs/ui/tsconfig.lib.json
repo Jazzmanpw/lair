@@ -7,7 +7,7 @@
     "emitDeclarationOnly": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", ".storybook/preview.tsx", ".storybook/vitest.setup.ts"],
+  "include": ["src", ".storybook/preview.tsx"],
   "references": [
     {
       "path": "../domain/tsconfig.lib.json"

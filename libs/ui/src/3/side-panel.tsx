@@ -7,6 +7,7 @@ export type SidePanelProps = {
   contentLabel?: string;
   onClose?: () => void;
   children?: ReactNode;
+  panelContent?: ReactNode;
 };
 
 export default function SidePanel({
@@ -15,6 +16,7 @@ export default function SidePanel({
   contentLabel = 'Panel content',
   onClose,
   children,
+  panelContent,
 }: SidePanelProps) {
   return (
     <div
@@ -40,7 +42,9 @@ export default function SidePanel({
             </button>
           </div>
           <div className="flex-1 overflow-auto p-4.5">
-            <Fpo className="h-full min-h-[60vh]">{contentLabel}</Fpo>
+            {panelContent ?? (
+              <Fpo className="h-full min-h-[60vh]">{contentLabel}</Fpo>
+            )}
           </div>
         </div>
       )}
