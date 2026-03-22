@@ -24,9 +24,10 @@ export default async function libraryGenerator(
     template: '',
   });
 
-  // Remove storybook files for non-react libs or when explicitly skipped
+  // Remove storybook and Tailwind files for non-react libs or when explicitly skipped
   if (options.type !== 'react' || options.skipStorybook) {
     tree.delete(join(options.libDir, '.storybook'));
+    tree.delete(join(options.libDir, 'src/styles.css'));
   }
 
   await formatFiles(tree);
