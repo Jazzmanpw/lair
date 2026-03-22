@@ -2,6 +2,11 @@
 
 Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; planning notes live under `docs/planning/`. The referenced vault lives in `E:\Persisted\НРИ` and Codex access is configured in `.claude/settings.json`.
 
+## External references
+
+- **TTRPG vault**: `E:\Persisted\НРИ` — source content for scenes, creatures, adventures
+- **PF2e statblock callout plugin**: `O:\obsidian\ttrpg-adventure-plugin\.obsidian\plugins\pf2e-statblock-callout\` — custom Obsidian plugin for rendering PF2e statblocks from callouts. Uses Century Gothic font, CSS-based styling. Reference for future statblock component implementation.
+
 ## Style agreements
 
 - Don't overuse variables. If an expression is self-descriptive, and it's only used in one place, prefer putting it inline (`const relativeToRoot = '../'.repeat(options.libDir.split(/[/\\]/).length);`) instead of creating a variable (`const depth = options.libDir.split(/[/\\]/).length; const relativeToRoot = '../'.repeat(depth);`)

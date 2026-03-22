@@ -9,7 +9,7 @@ const encounter = entranceScene.encounter!;
 type StoryArgs = EncounterSummaryProps;
 
 const meta = {
-  title: '1/Encounter Summary',
+  title: 'Iteration 1/Encounter Summary',
   component: EncounterSummary,
 } satisfies Meta<StoryArgs>;
 

@@ -7,8 +7,9 @@ import ScenePageLayout, {
 type StoryArgs = ScenePageLayoutProps;
 
 const meta = {
-  title: 'Iteration 1/Scene Page Layout',
+  title: 'Iteration 2/Scene Page Layout',
   component: ScenePageLayout,
+  parameters: {layout: 'fullscreen'},
 } satisfies Meta<StoryArgs>;
 
 export default meta;

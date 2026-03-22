@@ -7,7 +7,7 @@ import ScenePreviewCard, {
 type StoryArgs = ScenePreviewCardProps;
 
 const meta = {
-  title: 'Iteration 1/Scene Preview Card',
+  title: 'Iteration 2/Scene Preview Card',
   component: ScenePreviewCard,
 } satisfies Meta<StoryArgs>;
 

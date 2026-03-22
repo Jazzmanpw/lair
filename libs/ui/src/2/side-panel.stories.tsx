@@ -4,8 +4,9 @@ import SidePanel, {type SidePanelProps} from './side-panel.tsx';
 type StoryArgs = SidePanelProps;
 
 const meta = {
-  title: 'Iteration 1/Side Panel',
+  title: 'Iteration 2/Side Panel',
   component: SidePanel,
+  parameters: {layout: 'fullscreen'},
 } satisfies Meta<StoryArgs>;
 
 export default meta;
