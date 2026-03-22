@@ -2,200 +2,135 @@
 
 ## Context
 
-Parts A and B defined types and fixture data in `libs/domain`. This part builds the first
+Parts A and B defined types and fixture data in `libs/domain`. This part builds
 UI components and Storybook stories in `libs/ui` to explore layout and spatial structure
 for a "Running Scene Workspace".
 
 This is "carving in stone" — general structure with `Fpo` placeholders, NOT final screens.
 The goal is to explore spatial relationships, proportions, and zone placement.
 
+**Read `docs/ui-ux-values.md` before implementing.** It is the source of truth for
+palette, layout philosophy, and component intentions. Use the `frontend-design` skill
+for implementing all UI components.
+
 ## Prerequisites
 
 - Parts A and B completed (types and fixtures exist in `libs/domain`)
 - Storybook is configured in `libs/ui/.storybook/` with stories glob `../src/**/*.stories.tsx`
+- Tailwind CSS is available in Storybook via `@tailwindcss/vite` plugin
 
-## Generator Usage
+## Iteration Workflow
 
-Use full generator names to avoid confusion with built-in ones:
+Each iteration generates components from scratch into a numbered subdir:
 
 ```
-nx g @lair/tools:component <path>
-nx g @lair/tools:component <path> -s   # with story file
+libs/ui/src/<N>/          ← all components and stories for iteration N
 ```
 
-The generator:
+Story titles must be prefixed with the iteration number: `<N>/Component Name`.
 
-- Takes a `.tsx` file path
-- Derives component name from filename (kebab-case → PascalCase)
-- Generates props type unless `--skipProps`
-- `-s` flag generates a companion `.stories.tsx`
+Do NOT update `libs/ui/package.json` exports — those are added later when components
+are stable enough for app integration.
 
-## What To Do
+## Generate All Components
 
-### 1. Fpo Component — `libs/ui/src/fpo.tsx`
+Run all generators chained so they execute in a single command:
 
-Generate: `nx g @lair/tools:component libs/ui/src/fpo.tsx`
-
-No story file needed for Fpo.
-
-**Implementation:**
-
-```tsx
-export type FpoProps = {
-  children?: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-};
-
-export default function Fpo({
-  children = 'For placement only',
-  className = '',
-  style,
-}: FpoProps) {
-  return (
-    <div
-      className={`flex items-center justify-center bg-gray-100 text-gray-400 text-sm border border-dashed border-gray-300 rounded ${className}`}
-      style={style}
-    >
-      {children}
-    </div>
-  );
-}
+```
+npx nx g @lair/tools:component libs/ui/src/<N>/fpo.tsx && \
+npx nx g @lair/tools:component libs/ui/src/<N>/scene-page-layout.tsx -s && \
+npx nx g @lair/tools:component libs/ui/src/<N>/scene-preview-card.tsx -s && \
+npx nx g @lair/tools:component libs/ui/src/<N>/side-panel.tsx -s && \
+npx nx g @lair/tools:component libs/ui/src/<N>/encounter-tab.tsx -s && \
+npx nx g @lair/tools:component libs/ui/src/<N>/encounter-runner.tsx -s
 ```
 
-- `className` for Tailwind sizing (e.g. `h-64`, `flex-1`, `col-span-2`)
-- `style` as escape hatch for specific dimensions
-- Light gray bg + dashed border = clearly a placeholder
+The generator takes a `.tsx` file path, derives a PascalCase component name from the
+filename, generates a props type, and `-s` adds a companion `.stories.tsx`.
 
-### 2. Scene Page Layout — `libs/ui/src/scene-page-layout.tsx`
+## Components
 
-Generate: `nx g @lair/tools:component libs/ui/src/scene-page-layout.tsx -s`
+### 1. Fpo (no story)
 
-**What it explores:** overall page structure for viewing one scene.
+Placeholder component. Props: `children` (ReactNode, default "For placement only"),
+`className` (string), `style` (CSSProperties).
 
-**Structure:**
+Renders a clearly-placeholder div — dashed border, muted styling that fits the dark
+palette. Must be visually distinct from real content.
 
-- Two-column layout: main content (left) + sidebar rail (right)
-- Main column: stacked `Fpo` zones, each labeled with section name:
-  - Scene title + meta bar (location breadcrumb)
-  - Flavor text block
-  - Room description block
-  - Skill checks section (label shows count)
-  - Encounter summary section
-  - Traps section
-  - Treasures section
-- Sidebar rail: stacked `Fpo` zones:
-  - Linked scenes
-  - Encounter quick ref
-  - Map placeholder
+### 2. Scene Page Layout
 
-Each `Fpo` should be proportioned to roughly represent expected content volume.
+**What it explores:** overall workspace structure for viewing one scene.
 
-Takes a `Scene` from the fixture data to derive labels and section counts.
+Takes a `Scene` from fixture data. See `docs/ui-ux-values.md` → Scene Page Layout
+for the header/tabs/content/sidebar structure.
 
 **Story variants:**
 
-- `Default` — Entrance scene (all sections populated)
-- `NoEncounter` — Brazier Hall (no creatures, larger traps area)
+- `Default` — Entrance scene (has encounter, skill checks, traps, treasures)
+- `NoEncounter` — Brazier Hall (no creatures, more traps)
 
-### 3. Scene Preview Card — `libs/ui/src/scene-preview-card.tsx`
+### 3. Scene Preview Card
 
-Generate: `nx g @lair/tools:component libs/ui/src/scene-preview-card.tsx -s`
+**What it explores:** compact card for linked scene navigation in the sidebar rail.
 
-**What it explores:** compact card for linked scenes (sidebar rail or hover preview).
-
-**Structure:**
-
-- Small fixed-width card
-- Title
-- 1-line location breadcrumb
-- Summary counts: "4 creatures, 1 trap" or "No creatures, 3 traps"
-- `Fpo` for thumbnail/icon area
-- `Fpo` for connection-type indicator
-
-Takes `SceneMeta` + summary counts, not the full `Scene`.
+Takes `SceneMeta` + optional summary counts (creature count, trap count).
+See `docs/ui-ux-values.md` → Scene Preview Card.
 
 **Story variants:**
 
-- `WithEncounter` — Entrance scene card
-- `NoEncounter` — Morgue scene card
-- `Minimal` — title + location only
+- `WithEncounter` — Entrance scene card (creatures + traps)
+- `NoEncounter` — Morgue scene card (traps only, no creatures)
+- `Minimal` — title + location only (no counts)
 
-### 4. Side Panel — `libs/ui/src/side-panel.tsx`
-
-Generate: `nx g @lair/tools:component libs/ui/src/side-panel.tsx -s`
+### 4. Side Panel
 
 **What it explores:** pinned panel for creature/trap/scene detail alongside main content.
 
-**Structure:**
-
-- Wrapper simulates the page (main content = large `Fpo`)
-- Right-anchored panel: header (title + close button), scrollable body
-- Body: `Fpo` placeholder labeled with content type
-
-Explores: overlay vs push, panel width ratio, header area, scroll behavior.
+Wrapper simulates the page (main content = large Fpo). Right-anchored push panel
+with header (title + close button) and scrollable body. 100vh, no body scroll.
+See `docs/ui-ux-values.md` → Side Panel.
 
 **Story variants:**
 
-- `CreatureStatblock` — panel titled "Химера Тяньгу", body `Fpo` "Creature Statblock"
-- `TrapStatblock` — panel titled trap name, body `Fpo` "Trap Statblock"
+- `CreatureStatblock` — panel titled "Химера Тяньгу", body Fpo "Creature Statblock"
+- `TrapStatblock` — panel titled trap name, body Fpo "Trap Statblock"
 - `Closed` — panel hidden, just main content
 
-### 5. Encounter Summary — `libs/ui/src/encounter-summary.tsx`
+### 5. Encounter Tab
 
-Generate: `nx g @lair/tools:component libs/ui/src/encounter-summary.tsx -s`
-
-**What it explores:** encounter block within a scene page.
-
-**Structure:**
-
-- Header: threat level badge + "Encounter" label
-- Dramatic question (callout style)
-- Conflict sources (bullet list)
-- Creature list: mini-rows with name (as link text), count, `Fpo` for hover preview area
-- `Fpo` for tactical notes / encounter map area
+**What it explores:** encounter info block as it appears in the scene page content
+area (one of the switchable tabs). Static preview before running.
 
 Takes an `Encounter` from fixture data.
+See `docs/ui-ux-values.md` → Encounter (two modes) → Encounter tab.
+
+- Threat level badge, dramatic question, conflict sources, creature list with counts
+- "Run!" action area — entry point to encounter runner mode
+- Fpo for tactical notes / encounter map
 
 **Story variants:**
 
-- `Default` — Entrance encounter (4 creatures, full details)
-- `Compact` — same data, compressed for sidebar rail
+- `Default` — Entrance encounter (4 creature types, full details)
 
-### 6. Update `libs/ui/package.json` exports
+### 6. Encounter Runner
 
-Add explicit exports for each component:
+**What it explores:** active encounter management widget. Replaces the content
+area when the GM activates an encounter.
 
-```json
-{
-  "exports": {
-    "./fpo": "./src/fpo.tsx",
-    "./scene-page-layout": "./src/scene-page-layout.tsx",
-    "./scene-preview-card": "./src/scene-preview-card.tsx",
-    "./side-panel": "./src/side-panel.tsx",
-    "./encounter-summary": "./src/encounter-summary.tsx"
-  }
-}
-```
+Takes an `Encounter` from fixture data. Use fixture creature names as tab labels.
+See `docs/ui-ux-values.md` → Encounter (two modes) → Encounter runner.
 
-### 7. Verify
+- Compact metadata bar (threat level + dramatic question, no creature list)
+- Creature/PC tabs in initiative order, active tab shows detail as Fpo zones
+- Fpo zones for condition tracker and passive event reminders
+- 100vh-aware, fits content area without page scroll
 
-- `nx test ui` — vitest storybook tests pass (smoke-tests that each story renders without errors)
+**Story variants:**
+
+- `Default` — Entrance encounter with creature tabs shown
+
+## Verify
+
+- `nx test ui` — vitest storybook tests pass
 - `nx typecheck ui` — types compile
-
-## Files To Create/Modify
-
-- `libs/ui/src/fpo.tsx` — create
-- `libs/ui/src/scene-page-layout.tsx` — create
-- `libs/ui/src/scene-page-layout.stories.tsx` — create
-- `libs/ui/src/scene-preview-card.tsx` — create
-- `libs/ui/src/scene-preview-card.stories.tsx` — create
-- `libs/ui/src/side-panel.tsx` — create
-- `libs/ui/src/side-panel.stories.tsx` — create
-- `libs/ui/src/encounter-summary.tsx` — create
-- `libs/ui/src/encounter-summary.stories.tsx` — create
-- `libs/ui/package.json` — update `exports`
-
-## Files To Delete
-
-- `libs/ui/src/vite-env.d.ts` — only if it's a skeleton placeholder with no real content
