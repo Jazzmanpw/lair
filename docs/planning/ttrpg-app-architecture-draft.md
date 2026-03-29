@@ -180,7 +180,7 @@ It should cover at least:
 
 This distinction matters because "rules" in the current vault are not only ruling advice. They also include in-system entities and authoring references such as [`Создание существ.md`](/mnt/e/Persisted/НРИ/PF2e/Правила/Создание%20существ.md).
 
-PF2e should therefore be treated as a structured system content corpus rather than only as loose Markdown pages. Foundry JSON is a likely import source for PF2e data, but the app should also preserve locally-authored system material already present in the vault.
+PF2e should therefore be treated as a structured system content corpus rather than only as loose Markdown pages. Foundry JSON can still be a useful source corpus for importing and seeding PF2e content, but it should be adapted into app-owned domain models rather than mirrored as the app's native shape. The app should also preserve locally-authored system material already present in the vault.
 
 #### Idea
 

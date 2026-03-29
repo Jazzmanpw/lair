@@ -71,6 +71,8 @@ Contains:
 - motivation
 - creature-specific actions and abilities
 - attacks, spells, and other owned options
+- optional concept or motivation popup / pin affordance for deeper guidance,
+  instead of assuming that all motivation needs permanent inline space
 - short descriptions for those actions when useful, with full detail available
   through popup / pin interaction
 - resources relevant to action choice
@@ -241,6 +243,8 @@ A compact, state-oriented view per creature instance inside the Roster:
 - Main content should move toward the Flow / Roster / Actor / Interrupts split
 - Targets should be treated as a focus surface rather than a permanently visible
   full panel
+- Treat deeper creature concept / motivation as popup-or-pin reference attached
+  to the actor area rather than as mandatory inline content
 - Full statblock remains accessible through hover preview (with pin-to-sidebar
   button)
 - Manage encounter run-state at the runner level, pass slices down to the

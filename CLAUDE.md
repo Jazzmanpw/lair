@@ -20,7 +20,7 @@ Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; 
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
 - Don't assume Nx configuration details — check `nx.json`, project config, or Nx docs when unsure
 - If you don't like generation results, consider rolling back (cautiously if there are changes unrelated to generation) and generating again
-- For code verification, run `nx affected --base HEAD -t eslint:lint -- --fix` and `nx affected --base HEAD -t typecheck build test | tail -n 20`
+- For code verification, run `nx affected --base HEAD -t lint -- --fix` and `nx affected --base HEAD -t typecheck build test | tail -n 20`
 - When `nx` says "the workspace is out of sync", running `nx sync` both reports AND applies the sync. No need to run it a second time.
 - Before committing, run `nx format` to fix prettier formatting across the workspace
 
