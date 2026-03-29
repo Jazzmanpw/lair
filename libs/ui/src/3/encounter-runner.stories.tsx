@@ -1,5 +1,10 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
+import {
+  chimeraStatblock,
+  jumpingPorcupineStatblock,
+  owlbearStatblock,
+  threeHeadedDogStatblock,
+} from '@lair/domain/fixtures/creatures';
 import {entranceScene} from '@lair/domain/fixtures/scenes';
 import EncounterRunner, {
   type EncounterRunnerProps,
@@ -7,7 +12,12 @@ import EncounterRunner, {
 
 type StoryArgs = EncounterRunnerProps;
 
-const statblocks = {'khimera-tyangu': chimeraStatblock};
+const statblocks = {
+  'khimera-tyangu': chimeraStatblock,
+  'trekhgolovaya-sobaka-tyangu': threeHeadedDogStatblock,
+  'prygayushchiy-dikobraz-tyangu': jumpingPorcupineStatblock,
+  'sovomed-tyangu': owlbearStatblock,
+};
 
 const meta = {
   title: 'Iteration 3/Encounter Runner',

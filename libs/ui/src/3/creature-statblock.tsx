@@ -93,7 +93,7 @@ export default function CreatureStatblock({statblock}: CreatureStatblockProps) {
           label="Fort"
           value={`${defense.saves.fort}, Ref ${defense.saves.ref}, Will ${defense.saves.will}`}
         />
-        <StatLine label="HP" value={defense.hp} />
+        <StatLine label="HP" value={String(defense.hp)} />
         {defense.immunities && (
           <StatLine label="Immunities" value={defense.immunities.join(', ')} />
         )}

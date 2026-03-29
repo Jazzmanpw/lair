@@ -1,7 +1,8 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useReducer, useRef, useState} from 'react';
 import type {CreatureStatblock as StatblockType} from '@lair/domain/creature';
+import {initializeRunState, runStateReducer} from '@lair/domain/run-state';
 import type {Encounter} from '@lair/domain/scene';
-import CreatureStatblock from './creature-statblock.tsx';
+import CreatureCombatCard from './creature-combat-card.tsx';
 import Fpo from './fpo.tsx';
 
 export type EncounterRunnerProps = {
@@ -15,17 +16,12 @@ export default function EncounterRunner({
   statblocks = {},
   onEnd,
 }: EncounterRunnerProps) {
-  const creatureTabs = encounter.creatures.flatMap(({creature, count}) =>
-    Array.from({length: count}, (_, i) => ({
-      id: `${creature.id}-${i}`,
-      creatureId: creature.id,
-      label: count > 1 ? `${creature.label} ${i + 1}` : creature.label,
-    })),
+  const [runState, dispatch] = useReducer(
+    runStateReducer,
+    {encounter, statblocks},
+    ({encounter, statblocks}) => initializeRunState(encounter, statblocks),
   );
 
-  const [activeCreature, setActiveCreature] = useState(
-    creatureTabs[0]?.id ?? '',
-  );
   const [showConflicts, setShowConflicts] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -49,9 +45,6 @@ export default function EncounterRunner({
       document.removeEventListener('keydown', handleKey);
     };
   }, [showConflicts]);
-
-  const activeTab = creatureTabs.find((t) => t.id === activeCreature);
-  const activeStatblock = activeTab ? statblocks[activeTab.creatureId] : null;
 
   return (
     <div className="flex flex-col h-full bg-[#12170f] text-(--lair-text) font-(--lair-font) overflow-hidden">
@@ -87,6 +80,9 @@ export default function EncounterRunner({
             </div>
           )}
         </div>
+        <span className="text-[11px] font-bold tracking-[0.06em] uppercase text-(--lair-text-dim) shrink-0">
+          Round {runState.flow.round}
+        </span>
         <button
           type="button"
           onClick={onEnd}
@@ -96,40 +92,26 @@ export default function EncounterRunner({
         </button>
       </div>
 
-      <div className="flex gap-0.5 px-5 bg-[#151c12] border-b border-[#2c3428] overflow-auto shrink-0">
-        {creatureTabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveCreature(tab.id)}
-            className={`border-none cursor-pointer text-xs font-semibold px-3.5 py-2.5 font-(--lair-font) whitespace-nowrap transition-all duration-150 ${
-              activeCreature === tab.id
-                ? 'bg-[#1d231a] text-[#e8e4d8] border-b-2 border-b-[#5ca64c]'
-                : 'bg-transparent text-(--lair-text-dim) border-b-2 border-b-transparent'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex-1 grid grid-cols-[1fr_240px] overflow-hidden">
-        <div className="overflow-auto p-4 px-5">
-          <div className="grid grid-cols-[3fr_2fr] gap-3 mb-3">
-            {activeStatblock ? (
-              <CreatureStatblock statblock={activeStatblock} />
-            ) : (
-              <Fpo style={{height: '200px'}}>
-                Creature Statblock — {activeTab?.label}
-              </Fpo>
-            )}
-            <Fpo style={{height: '200px'}}>Actions & Abilities</Fpo>
-          </div>
+      <div className="flex-1 grid grid-cols-[260px_1fr] overflow-hidden">
+        <div className="border-r border-[#2c3428] overflow-auto p-3 flex flex-col gap-2">
+          {runState.participants.map((p) => (
+            <CreatureCombatCard
+              key={p.id}
+              participant={p}
+              state={runState.creatureStates[p.id]}
+              statblock={p.statblockId ? statblocks[p.statblockId] : undefined}
+              isActive={p.id === runState.flow.activeParticipantId}
+              onAction={dispatch}
+            />
+          ))}
         </div>
 
-        <div className="border-l border-[#2c3428] overflow-auto p-4 px-3.5 flex flex-col gap-3">
-          <Fpo style={{height: '160px'}}>Condition Tracker</Fpo>
-          <Fpo className="flex-1 min-h-[120px]">Passive Event Reminders</Fpo>
+        <div className="overflow-auto p-4 px-5">
+          <div className="grid grid-cols-[2fr_1fr] gap-3 mb-3">
+            <Fpo className="min-h-[200px]">Actor</Fpo>
+            <Fpo className="min-h-[200px]">Interrupts</Fpo>
+          </div>
+          <Fpo className="min-h-[120px]">Targets</Fpo>
         </div>
       </div>
     </div>

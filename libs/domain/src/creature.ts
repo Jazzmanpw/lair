@@ -26,7 +26,7 @@ export type PerceptionBlock = {
 export type DefenseBlock = {
   ac: string;
   saves: {fort: string; ref: string; will: string};
-  hp: string;
+  hp: number;
   immunities?: string[];
   resistances?: string[];
   weaknesses?: string[];
