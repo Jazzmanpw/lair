@@ -6,9 +6,9 @@ import {
   threeHeadedDogStatblock,
 } from '@lair/domain/fixtures/creatures';
 import {entranceScene} from '@lair/domain/fixtures/scenes';
-import EncounterRunner, {
+import LegacyEncounterRunner, {
   type EncounterRunnerProps,
-} from './encounter-runner.tsx';
+} from './legacy-encounter-runner.tsx';
 
 type StoryArgs = EncounterRunnerProps;
 
@@ -20,8 +20,8 @@ const statblocks = {
 };
 
 const meta = {
-  title: 'Iteration 3/Encounter Runner',
-  component: EncounterRunner,
+  title: 'Iteration 3/Legacy/Encounter Runner',
+  component: LegacyEncounterRunner,
 } satisfies Meta<StoryArgs>;
 
 export default meta;

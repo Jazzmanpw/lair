@@ -1,9 +1,9 @@
 import {useState} from 'react';
 import type {CreatureStatblock} from '@lair/domain/creature';
 import type {Scene, SceneMeta} from '@lair/domain/scene';
-import EncounterRunner from './encounter-runner.tsx';
-import EncounterTab from './encounter-tab.tsx';
 import Fpo from './fpo.tsx';
+import LegacyEncounterRunner from './legacy-encounter-runner.tsx';
+import LegacyEncounterTab from './legacy-encounter-tab.tsx';
 import ScenePreviewCard from './scene-preview-card.tsx';
 
 export type LinkedSceneData = {
@@ -159,13 +159,13 @@ export default function ScenePageLayout({
       {/* Content area */}
       <div className="overflow-auto">
         {activeTab === 'encounter' && encounter && isRunning ? (
-          <EncounterRunner
+          <LegacyEncounterRunner
             encounter={encounter}
             statblocks={statblocks}
             onEnd={() => setIsRunning(false)}
           />
         ) : activeTab === 'encounter' && encounter ? (
-          <EncounterTab
+          <LegacyEncounterTab
             encounter={encounter}
             statblocks={statblocks}
             onRun={() => setIsRunning(true)}

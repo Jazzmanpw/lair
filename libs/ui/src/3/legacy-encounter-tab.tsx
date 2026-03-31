@@ -94,7 +94,7 @@ function CreatureRow({
   );
 }
 
-export default function EncounterTab({
+export default function LegacyEncounterTab({
   encounter,
   statblocks = {},
   onRun,

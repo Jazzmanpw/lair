@@ -11,7 +11,7 @@ export type EncounterRunnerProps = {
   onEnd?: () => void;
 };
 
-export default function EncounterRunner({
+export default function LegacyEncounterRunner({
   encounter,
   statblocks = {},
   onEnd,

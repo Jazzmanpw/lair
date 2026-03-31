@@ -6,6 +6,7 @@ Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; 
 
 - **TTRPG vault**: `E:\Persisted\НРИ` — source content for scenes, creatures, adventures
 - **PF2e statblock callout plugin**: `O:\obsidian\ttrpg-adventure-plugin\.obsidian\plugins\pf2e-statblock-callout\` — custom Obsidian plugin for rendering PF2e statblocks from callouts. Uses Century Gothic font, CSS-based styling. Reference for future statblock component implementation.
+- **App philosophy**: `docs/planning/ttrpg-app-philosophy.md` — design principles and what the app is/isn't. Read when discussing design direction, UX decisions, or the app's goals.
 
 ## Style agreements
 

@@ -100,6 +100,26 @@ The concept's `abilities` should usually remain prep-only, because the actual
 mechanical abilities derived from them should already exist in the template's
 real statblock entries.
 
+In addition to concept, a template may also define local selectable variations
+used by encounter participant setup.
+
+```ts
+type CreatureVariation = {
+  id: string;
+  label: string;
+  aspect: string;
+  enabledEntryIds: string[];
+};
+```
+
+This split is intentional:
+
+- `label` is the short UI-facing chip or tag used to distinguish a variation;
+- `aspect` is appended to the concept theme aspects when resolving the creature
+  for display and can be longer than a compact label;
+- `enabledEntryIds` keeps the first version simple by activating existing entry
+  ids instead of introducing a more complex conditional system immediately.
+
 ### 2. Encounter Setup
 
 An `EncounterSetup` is canonical scene-local preparation created in Building
@@ -136,7 +156,7 @@ template.
 This is the layer that answers questions like:
 
 - which template is this participant based on;
-- which optional aspect or configuration is selected for this instance;
+- which optional variation or configuration is selected for this instance;
 - which prepared resources or local variations apply here;
 - what prep notes should be visible when this participant is relevant.
 
@@ -189,6 +209,34 @@ The preferred statblock direction is:
 - less fine-grained than data shaped for direct rule execution and automation;
 - optimized for authoring and display rather than rule execution.
 
+For PF2e-authored custom creatures, benchmarked numeric values should preserve
+both the exact number and its prep-time scale.
+
+```ts
+type Scale = 'extreme' | 'high' | 'moderate' | 'low' | 'terrible';
+
+type ScaledStat = {
+  value: number;
+  scale: Scale;
+  note?: string;
+};
+```
+
+This should be used for stats where the authored workflow depends on selecting a
+scale first and then filling the exact value from guidance tables.
+
+The display string should be derived from structured data rather than stored as
+one mixed string. For example, a value such as `Diplomacy +3 (+5 to recruit into
+the order)` should be modeled as:
+
+- exact value in `value`;
+- scale in `scale`;
+- parenthetical or conditional descriptor in `note`.
+
+The `note` field is intentionally plain text for now. It may later support more
+structured interpolation or parameterization, but the first model should treat
+it as authored descriptive text.
+
 That suggests:
 
 - a structured root creature model for stats and reference sections;
@@ -216,7 +264,7 @@ statblocks.
 
 This means the model should support things like:
 
-- selected aspects;
+- selected variations;
 - enabled or disabled optional entries;
 - local loadout choices;
 - prepared starting resources;
@@ -374,7 +422,7 @@ The data flow suggests the following UI split.
 The following should remain flexible for now:
 
 - the exact structured statblock field inventory;
-- the exact configuration shape for conditional entries and selected aspects;
+- the exact configuration shape for conditional entries and selected variations;
 - the future typed ref model behind note links;
 - whether some notes later deserve stronger domain structure;
 - how much of concept should be shown inline vs popup vs pinned reference;
