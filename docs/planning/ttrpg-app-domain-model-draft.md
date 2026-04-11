@@ -220,8 +220,7 @@ A participant in the session has:
   motivations but editable during play. Motivations can shift as the situation
   changes (the keepers grab the journal — their motivation shifts from "find it"
   to "escape with it");
-- tactical state — HP, conditions, spent resources, reaction availability;
-- associations with conflict sources on open encounters.
+- tactical state — HP, conditions, spent resources, reaction availability.
 
 Through conflict sources, a participant is connected to encounters — but
 indirectly. A participant outlives any specific encounter. When an encounter
@@ -287,6 +286,8 @@ Conflict sources are dynamic during play:
 When a participant enters a scene, it does not just "join an encounter" — its
 motivations may add new conflict sources or even spawn a new encounter with a
 different dramatic question.
+
+Conflict sources keep a link to the motivation that drives them, so that if the motivation changes, there can be a visual hint to update the conflict source.
 
 ### Initiative Flow
 
