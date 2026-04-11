@@ -1,5 +1,8 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {brazierHallScene, entranceScene} from '@lair/domain/fixtures/scenes';
+import {
+  brazierHallScene,
+  entranceScene,
+} from '@lair/domain/fixtures-legacy/scenes';
 import ScenePageLayout, {
   type ScenePageLayoutProps,
 } from './scene-page-layout.tsx';

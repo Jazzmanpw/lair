@@ -4,8 +4,8 @@ import {
   jumpingPorcupineStatblock,
   owlbearStatblock,
   threeHeadedDogStatblock,
-} from '@lair/domain/fixtures/creatures';
-import {entranceScene} from '@lair/domain/fixtures/scenes';
+} from '@lair/domain/fixtures-legacy/creatures';
+import {entranceScene} from '@lair/domain/fixtures-legacy/scenes';
 import LegacyEncounterRunner, {
   type EncounterRunnerProps,
 } from './legacy-encounter-runner.tsx';

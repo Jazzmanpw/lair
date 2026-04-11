@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
+import {chimeraStatblock} from '@lair/domain/fixtures-legacy/creatures';
 import CreatureStatblock, {
   type CreatureStatblockProps,
 } from './creature-statblock.tsx';

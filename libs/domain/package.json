@@ -6,8 +6,10 @@
   "exports": {
     "./scene": "./src/scene.ts",
     "./creature": "./src/creature.ts",
-    "./fixtures/scenes": "./src/fixtures/scenes.ts",
-    "./fixtures/creatures": "./src/fixtures/creatures.ts",
+    "./fixtures-legacy/scenes": "./src/fixtures-legacy/scenes.ts",
+    "./fixtures-legacy/creatures": "./src/fixtures-legacy/creatures.ts",
+    "./fixtures/statblocks": "./src/fixtures/statblocks.ts",
+    "./fixtures/setups": "./src/fixtures/setups.ts",
     "./run-state": "./src/run-state.ts"
   }
 }

@@ -1,10 +1,10 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
+import {chimeraStatblock} from '@lair/domain/fixtures-legacy/creatures';
 import {
   brazierHallScene,
   entranceScene,
   morgueScene,
-} from '@lair/domain/fixtures/scenes';
+} from '@lair/domain/fixtures-legacy/scenes';
 import type {Scene, SceneMeta} from '@lair/domain/scene';
 import ScenePageLayout, {
   type LinkedSceneData,

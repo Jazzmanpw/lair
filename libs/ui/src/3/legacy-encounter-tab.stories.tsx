@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
-import {entranceScene} from '@lair/domain/fixtures/scenes';
+import {chimeraStatblock} from '@lair/domain/fixtures-legacy/creatures';
+import {entranceScene} from '@lair/domain/fixtures-legacy/scenes';
 import LegacyEncounterTab, {
   type EncounterTabProps,
 } from './legacy-encounter-tab.tsx';

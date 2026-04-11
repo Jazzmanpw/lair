@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {entranceScene, morgueScene} from '@lair/domain/fixtures/scenes';
+import {entranceScene, morgueScene} from '@lair/domain/fixtures-legacy/scenes';
 import ScenePreviewCard, {
   type ScenePreviewCardProps,
 } from './scene-preview-card.tsx';

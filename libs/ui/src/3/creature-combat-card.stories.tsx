@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useReducer} from 'react';
-import {chimeraStatblock} from '@lair/domain/fixtures/creatures';
+import {chimeraStatblock} from '@lair/domain/fixtures-legacy/creatures';
 import type {
   EncounterParticipant,
   ParticipantRunState,

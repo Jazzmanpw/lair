@@ -1,5 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {entranceScene} from '@lair/domain/fixtures/scenes';
+import {entranceScene} from '@lair/domain/fixtures-legacy/scenes';
 import EncounterRunner, {
   type EncounterRunnerProps,
 } from './encounter-runner.tsx';

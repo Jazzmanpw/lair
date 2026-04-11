@@ -68,7 +68,7 @@ export type EncounterSetup = {
     id: string;
     name?: string;
     setupId: string;
-    variationId: string | null;
+    variationId?: string | null;
     motivations: ParticipantMotivation[];
   }[];
 };
