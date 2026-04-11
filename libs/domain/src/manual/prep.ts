@@ -29,7 +29,6 @@ type ParticipantConcept = {
   references: string;
   theme: ParticipantTheme;
   abilities: string[];
-  motivations: ParticipantMotivation[];
 };
 
 type ParticipantTheme = {
@@ -63,12 +62,6 @@ type StatblockDelta<Type extends ParticipantType = ParticipantType> = {
   group: never;
 }[Type];
 
-export type ParticipantGroupSetup = {
-  id: string;
-  name: string;
-  concept: ParticipantConcept;
-};
-
 export type EncounterSetup = {
   potentialDramaticQuestion: string;
   participants: {
@@ -76,5 +69,6 @@ export type EncounterSetup = {
     name?: string;
     setupId: string;
     variationId: string | null;
+    motivations: ParticipantMotivation[];
   }[];
 };

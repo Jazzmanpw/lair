@@ -76,3 +76,18 @@ The app's encounter model follows the Angry GM framework:
 
 This framework shapes how encounters are prepared, opened, tracked, and closed
 in the app. It is not optional flavor — it is the structural foundation.
+
+### Beauty signals correctness
+
+A tool the GM reaches for mid-session must feel fluid and trustworthy. Polish
+isn't decoration — it's a signal that the internals are sound. Laggy
+interactions, clumsy layouts, and rough edges erode confidence and pull the GM
+out of the game. The same care that goes into the data model and interaction
+design should show up in every surface the GM touches.
+
+This applies to hidden internals too: clean code structure, coherent naming, and
+well-composed abstractions aren't just developer niceties — they're what make it
+possible to keep the visible product polished as it grows.
+
+See also: `E:\Persisted\Работа\DHH's new way of writing code.md` — the broader
+argument from DHH on aesthetics as truth and craft in software.
