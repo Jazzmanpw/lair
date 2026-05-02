@@ -10,12 +10,13 @@ export type Session = {
   };
 };
 
-type Participant<Type extends ParticipantType = ParticipantType> = {
+export type Participant<Type extends ParticipantType = ParticipantType> = {
   id: string;
+  name: string;
   setupId: string;
   motivations: ParticipantMotivation[];
 } & Participant.TypeState<Type>;
-namespace Participant {
+export namespace Participant {
   export type TypeState<Type extends ParticipantType = ParticipantType> = {
     [T in ParticipantType]: {
       type: T;
@@ -29,17 +30,17 @@ namespace Participant {
   }[Type];
 }
 
-type Encounter = {
+export type Encounter = {
   dramaticQuestion: string;
   conflictSources: ConflictSource[];
 };
 
-type ConflictSource = {
+export type ConflictSource = {
   opposition: string;
   reasons: ConflictSourceReason[];
 };
 
-type ConflictSourceReason = {
+export type ConflictSourceReason = {
   type: 'aspect' | 'motivation';
   id: string;
 };

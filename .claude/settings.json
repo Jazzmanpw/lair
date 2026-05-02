@@ -1,6 +1,14 @@
 {
   "permissions": {
     "additionalDirectories": ["E:\\Persisted\\НРИ"],
-    "allow": ["Bash(git add:*)"]
+    "ask": ["Bash(npx nx g *)", "Bash(npx nx generate *)"],
+    "allow": [
+      "Bash(npx nx *)",
+      "Bash(npm view *)",
+      "Bash(npm help *)",
+      "WebFetch(domain:nx.dev)",
+      "WebFetch(domain:caniuse.com)",
+      "WebFetch(domain:webkit.org)"
+    ]
   }
 }

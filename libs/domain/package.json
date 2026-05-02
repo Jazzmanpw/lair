@@ -10,6 +10,9 @@
     "./fixtures-legacy/creatures": "./src/fixtures-legacy/creatures.ts",
     "./fixtures/statblocks": "./src/fixtures/statblocks.ts",
     "./fixtures/setups": "./src/fixtures/setups.ts",
-    "./run-state": "./src/run-state.ts"
+    "./run-state": "./src/run-state.ts",
+    "./manual/prep": "./src/manual/prep.ts",
+    "./manual/pf2e": "./src/manual/pf2e.ts",
+    "./manual/running": "./src/manual/running.ts"
   }
 }

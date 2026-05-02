@@ -135,3 +135,13 @@ Each POC round is verified by a story with:
 
 No separate unit tests for POC — the play function exercises the full flow
 (form interaction → resolver → output assertion).
+
+## No schema-level guards for setup/statblock lookups
+
+The transform looks up `ctx.setupsById[setupId]` and
+`ctx.statblocksById[statblockId]` without validating that they exist. The form
+only offers valid selections from `availableSetups`, so invalid `setupId` values
+can't be produced by user interaction — only by a programmer bug. Schema
+validation protects against user input; setup/statblock availability is a system
+invariant, not user input. Adding guards would mask real bugs behind validation
+errors instead of letting them surface as crashes during development.

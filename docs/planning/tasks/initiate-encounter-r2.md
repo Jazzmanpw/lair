@@ -6,8 +6,6 @@ and name editing to the round 1 skeleton.
 Decisions and trade-offs: see
 [encounter-initiation-domain.md](../decisions/encounter-initiation-domain.md).
 
-Depends on: [initiate-encounter-r1.md](initiate-encounter-r1.md).
-
 ## What to add
 
 ### Conflict source reasons linked to A/Ms
