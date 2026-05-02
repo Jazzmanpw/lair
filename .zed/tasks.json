@@ -8,6 +8,11 @@
     "reveal": "never"
   },
   {
+    "label": "affected checks",
+    "command": "npx nx affected -t typecheck test build",
+    "hide": "on_success"
+  },
+  {
     "label": "lint fix",
     "command": "npx nx run-many -t lint -- --fix",
     "hide": "on_success"

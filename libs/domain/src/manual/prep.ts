@@ -37,7 +37,7 @@ type ParticipantTheme = {
   feeling: string;
 };
 
-type ParticipantAspect = {
+export type ParticipantAspect = {
   id: string;
   value: string;
 };

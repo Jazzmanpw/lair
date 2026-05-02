@@ -145,3 +145,16 @@ can't be produced by user interaction — only by a programmer bug. Schema
 validation protects against user input; setup/statblock availability is a system
 invariant, not user input. Adding guards would mask real bugs behind validation
 errors instead of letting them surface as crashes during development.
+
+## Deferred: statblock delta application
+
+Variation selection records `variationId` but does not apply `statblockDelta` to
+derived state. The natural place for this is `deriveInitialCreatureState` — apply
+the variation's delta on top of the base statblock before computing initial HP,
+conditions, etc.
+
+Deferred because R2 focuses on form UX (linking, selection, editing), and delta
+application requires resolving the `CreatureStatblockDelta` functional type (each
+key is `(prev) => next`). Implement when state editing enters scope — at that
+point derived state is already mutable in the form and the delta is just another
+seed-time transformation.

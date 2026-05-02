@@ -58,6 +58,29 @@ export const ratSetup: ParticipantSetup<'creature'> = {
   },
 };
 
+export const dogSetupWithVariation: ParticipantSetup<'creature'> = {
+  ...dogSetup,
+  id: 'setup-okamenevshaya-sobaka-var',
+  name: 'Окаменевшая собака (вариативная)',
+  meta: {
+    ...dogSetup.meta,
+    variations: [
+      {
+        id: 'var-aggro',
+        name: 'Агрессивная',
+        aspect: {id: 'aspect-aggro', value: 'Готова напасть на любого'},
+        statblockDelta: {},
+      },
+      {
+        id: 'var-passive',
+        name: 'Пассивная',
+        aspect: {id: 'aspect-passive', value: 'Спит и не хочет просыпаться'},
+        statblockDelta: {},
+      },
+    ],
+  },
+};
+
 export const pitomnikEncounterSetup: EncounterSetup = {
   potentialDramaticQuestion:
     'Смогут ли персонажи безопасно пройти через комнату?',
