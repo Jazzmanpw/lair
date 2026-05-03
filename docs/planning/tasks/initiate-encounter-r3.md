@@ -7,8 +7,6 @@ described in the parent task.
 Decisions and trade-offs: see
 [encounter-initiation-domain.md](../decisions/encounter-initiation-domain.md).
 
-Depends on: [initiate-encounter-r2.md](initiate-encounter-r2.md).
-
 ## What to add
 
 ### Group resolution
