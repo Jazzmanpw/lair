@@ -4,9 +4,9 @@ export type ParticipantSetup<Type extends ParticipantType = ParticipantType> = {
   id: string;
   name: string;
   concept: ParticipantConcept;
-} & ParticipantSetup.TypeMeta<Type>;
+} & ParticipantSetup.OfType<Type>;
 export namespace ParticipantSetup {
-  export type TypeMeta<Type extends ParticipantType = ParticipantType> = {
+  export type OfType<Type extends ParticipantType = ParticipantType> = {
     [T in ParticipantType]: {
       type: T;
       meta: Meta<T>;

@@ -1,20 +1,13 @@
 import {z} from 'zod';
 import type {CreatureStatblock, CreatureState} from '@lair/domain/manual/pf2e';
-import type {
-  ParticipantMotivation,
-  ParticipantSetup,
-} from '@lair/domain/manual/prep';
+import type {ParticipantMotivation} from '@lair/domain/manual/prep';
 import type {ConflictSource} from '@lair/domain/manual/running';
-
-export type EncounterDraftContext = {
-  setupsById: Record<string, ParticipantSetup<'creature'>>;
-  statblocksById: Record<string, CreatureStatblock>;
-};
 
 export type ResolvedParticipant = {
   id: string;
   setupId: string;
   name: string;
+  variationId: string | null;
   motivations: ParticipantMotivation[];
   type: 'creature';
   state: CreatureState;
@@ -25,7 +18,7 @@ export type ResolvedEncounterDraft = {
     dramaticQuestion: string;
     conflictSources: ConflictSource[];
   };
-  newParticipants: ResolvedParticipant[];
+  participants: ResolvedParticipant[];
 };
 
 export function deriveInitialCreatureState(
@@ -46,54 +39,54 @@ const MotivationSchema = z.object({
   value: z.string().min(1),
 });
 
-const ConflictSourceDraftSchema = z
-  .object({opposition: z.string().min(1)})
-  .transform(({opposition}): ConflictSource => ({opposition, reasons: []}));
+const ConflictSourceReasonSchema = z.object({
+  type: z.enum(['aspect', 'motivation']),
+  id: z.string(),
+});
 
-const makeParticipantFormEntrySchema = (ctx: EncounterDraftContext) =>
-  z
-    .object({
-      id: z.string(),
-      setupId: z.string().min(1),
-      name: z.string().min(1),
-      motivations: z.array(MotivationSchema),
-    })
-    .transform((entry): ResolvedParticipant => {
-      const setup = ctx.setupsById[entry.setupId];
-      const statblock = ctx.statblocksById[setup.meta.statblockId];
-      return {
-        id: entry.id,
-        setupId: entry.setupId,
-        name: entry.name,
-        motivations: entry.motivations,
-        type: 'creature',
-        state: deriveInitialCreatureState(statblock),
-      };
-    });
+const ConflictSourceDraftSchema = z.object({
+  opposition: z.string().min(1),
+  reasons: z.array(ConflictSourceReasonSchema),
+});
 
-export const makeEncounterDraftSchema = (ctx: EncounterDraftContext) => {
-  const entrySchema = makeParticipantFormEntrySchema(ctx);
+const ParticipantFormEntrySchema = z
+  .object({
+    id: z.string(),
+    setupId: z.string().min(1),
+    name: z.string().min(1),
+    variationId: z.string().optional(),
+    motivations: z.array(MotivationSchema),
+    state: z.custom<CreatureState>(),
+  })
+  .transform(
+    (entry): ResolvedParticipant => ({
+      id: entry.id,
+      setupId: entry.setupId,
+      name: entry.name,
+      variationId: entry.variationId || null,
+      motivations: entry.motivations,
+      type: 'creature',
+      state: entry.state,
+    }),
+  );
 
-  return z
-    .object({
-      dramaticQuestion: z.string().min(1),
-      participants: z.array(entrySchema).min(1),
-      conflictSources: z.array(ConflictSourceDraftSchema).min(1),
-    })
-    .transform(
-      (value): ResolvedEncounterDraft => ({
-        encounter: {
-          dramaticQuestion: value.dramaticQuestion,
-          conflictSources: value.conflictSources,
-        },
-        newParticipants: value.participants,
-      }),
-    );
-};
+export const EncounterDraftSchema = z
+  .object({
+    dramaticQuestion: z.string().min(1),
+    participants: z.array(ParticipantFormEntrySchema).min(1),
+    conflictSources: z.array(ConflictSourceDraftSchema).min(1),
+  })
+  .transform(
+    (value): ResolvedEncounterDraft => ({
+      encounter: {
+        dramaticQuestion: value.dramaticQuestion,
+        conflictSources: value.conflictSources,
+      },
+      participants: value.participants,
+    }),
+  );
 
-export type EncounterDraftInput = z.input<
-  ReturnType<typeof makeEncounterDraftSchema>
->;
+export type EncounterDraftInput = z.input<typeof EncounterDraftSchema>;
 
 export function createDefaultValues(): EncounterDraftInput {
   return {

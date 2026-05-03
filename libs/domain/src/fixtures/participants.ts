@@ -14,4 +14,5 @@ export const sessionDog: Participant<'creature'> = {
     items: [],
     conditions: [{ruleId: 'blinded'}],
   },
+  variationId: null,
 };

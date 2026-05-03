@@ -15,14 +15,14 @@ export type Participant<Type extends ParticipantType = ParticipantType> = {
   name: string;
   setupId: string;
   motivations: ParticipantMotivation[];
-} & Participant.TypeState<Type>;
+} & Participant.OfType<Type>;
 export namespace Participant {
-  export type TypeState<Type extends ParticipantType = ParticipantType> = {
+  export type OfType<Type extends ParticipantType = ParticipantType> = ({
     [T in ParticipantType]: {
       type: T;
       state: State<T>;
     };
-  }[Type];
+  } & {creature: {variationId: string | null}})[Type];
 
   export type State<Type extends ParticipantType> = {
     creature: CreatureState;
