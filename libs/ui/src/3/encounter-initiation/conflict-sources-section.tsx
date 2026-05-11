@@ -8,7 +8,7 @@ import {selectAvailableReasonGroups, selectReasonLabel} from './reason-pool.ts';
 import type {ReasonGroup, ReasonOption} from './reason-pool.ts';
 
 type ConflictSourcesSectionProps = {
-  setupsById: Record<string, ParticipantSetup<'creature'>>;
+  setupsById: Record<string, ParticipantSetup>;
 };
 
 export const ConflictSourcesSection = withEncounterForm({
@@ -21,117 +21,118 @@ export const ConflictSourcesSection = withEncounterForm({
       <fieldset className="flex flex-col gap-2 border border-(--lair-border) p-3">
         <legend className="text-sm font-bold px-1">Conflict sources</legend>
         <form.Field name="conflictSources" mode="array">
-          {(field) => (
-            <ul className="flex flex-col gap-3">
-              {field.state.value.map((_source, index) => (
-                <li
-                  key={index}
-                  className="flex flex-col gap-2 border border-(--lair-border) p-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <form.Field name={`conflictSources[${index}].opposition`}>
-                      {(oppositionField) => (
-                        <label className="flex flex-col gap-1 flex-1">
-                          <span className="text-xs">Opposition</span>
-                          <input
-                            type="text"
-                            className="border border-(--lair-border) bg-transparent px-2 py-1 text-sm"
-                            value={oppositionField.state.value}
-                            onChange={(event) =>
-                              oppositionField.handleChange(event.target.value)
-                            }
-                          />
-                        </label>
-                      )}
-                    </form.Field>
-                    <button
-                      type="button"
-                      className="text-xs border border-(--lair-border) px-2 py-0.5"
-                      onClick={() =>
-                        void form.removeFieldValue('conflictSources', index)
-                      }
-                    >
-                      Remove conflict source
-                    </button>
-                  </div>
-
-                  <form.Field
-                    name={`conflictSources[${index}].reasons`}
-                    mode="array"
+          {(conflictSourcesField) => (
+            <>
+              <ul className="flex flex-col gap-3">
+                {conflictSourcesField.state.value.map((_source, index) => (
+                  <li
+                    key={index}
+                    className="flex flex-col gap-2 border border-(--lair-border) p-2"
                   >
-                    {(reasonField) =>
-                      reasonField.state.value.length > 0 && (
-                        <ul className="flex flex-col gap-1">
-                          {reasonField.state.value.map(
-                            (reason, reasonIndex) => (
-                              <li
-                                key={reason.id}
-                                className="flex items-center gap-2 text-xs"
-                              >
-                                <span className="flex-1">
-                                  <form.Subscribe
-                                    selector={selectReasonLabel(
-                                      setupsById,
-                                      reason,
-                                    )}
+                    <div className="flex items-center gap-2">
+                      <form.Field name={`conflictSources[${index}].opposition`}>
+                        {(oppositionField) => (
+                          <label className="flex flex-col gap-1 flex-1">
+                            <span className="text-xs">Opposition</span>
+                            <input
+                              type="text"
+                              className="border border-(--lair-border) bg-transparent px-2 py-1 text-sm"
+                              value={oppositionField.state.value}
+                              onChange={(event) =>
+                                oppositionField.handleChange(event.target.value)
+                              }
+                            />
+                          </label>
+                        )}
+                      </form.Field>
+                      <button
+                        type="button"
+                        className="text-xs border border-(--lair-border) px-2 py-0.5"
+                        onClick={() => conflictSourcesField.removeValue(index)}
+                      >
+                        Remove conflict source
+                      </button>
+                    </div>
+
+                    <form.Field
+                      name={`conflictSources[${index}].reasons`}
+                      mode="array"
+                    >
+                      {(reasonField) => (
+                        <>
+                          {reasonField.state.value.length > 0 && (
+                            <ul className="flex flex-col gap-1">
+                              {reasonField.state.value.map(
+                                (reason, reasonIndex) => (
+                                  <li
+                                    key={reason.id}
+                                    className="flex items-center gap-2 text-xs"
                                   >
-                                    {(label) => label}
-                                  </form.Subscribe>
-                                </span>
-                                <button
-                                  type="button"
-                                  className="border border-(--lair-border) px-1 py-0.5"
-                                  onClick={() => {
-                                    void form.removeFieldValue(
+                                    <span className="flex-1">
+                                      <form.Subscribe
+                                        selector={selectReasonLabel(
+                                          setupsById,
+                                          reason,
+                                        )}
+                                      >
+                                        {(label) => label}
+                                      </form.Subscribe>
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="border border-(--lair-border) px-1 py-0.5"
+                                      onClick={() => {
+                                        reasonField.removeValue(reasonIndex);
+                                      }}
+                                    >
+                                      Unlink
+                                    </button>
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          )}
+                          <form.Subscribe
+                            selector={selectAvailableReasonGroups(
+                              setupsById,
+                              index,
+                            )}
+                          >
+                            {(availableReasonGroups) =>
+                              availableReasonGroups.length > 0 && (
+                                <LinkReasonControl
+                                  groups={availableReasonGroups}
+                                  onLink={(reason) => {
+                                    form.pushFieldValue(
                                       `conflictSources[${index}].reasons`,
-                                      reasonIndex,
+                                      {type: reason.type, id: reason.id},
                                     );
                                   }}
-                                >
-                                  Unlink
-                                </button>
-                              </li>
-                            ),
-                          )}
-                        </ul>
-                      )
-                    }
-                  </form.Field>
-
-                  <form.Subscribe
-                    selector={selectAvailableReasonGroups(setupsById, index)}
-                  >
-                    {(availableReasonGroups) =>
-                      availableReasonGroups.length > 0 && (
-                        <LinkReasonControl
-                          groups={availableReasonGroups}
-                          onLink={(reason) => {
-                            form.pushFieldValue(
-                              `conflictSources[${index}].reasons`,
-                              {type: reason.type, id: reason.id},
-                            );
-                          }}
-                        />
-                      )
-                    }
-                  </form.Subscribe>
-                </li>
-              ))}
-            </ul>
+                                />
+                              )
+                            }
+                          </form.Subscribe>
+                        </>
+                      )}
+                    </form.Field>
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                className="self-start text-xs border border-(--lair-border) px-2 py-0.5"
+                onClick={() =>
+                  conflictSourcesField.pushValue({
+                    opposition: '',
+                    reasons: [],
+                  })
+                }
+              >
+                Add conflict source
+              </button>
+            </>
           )}
         </form.Field>
-        <button
-          type="button"
-          className="self-start text-xs border border-(--lair-border) px-2 py-0.5"
-          onClick={() =>
-            form.pushFieldValue('conflictSources', {
-              opposition: '',
-              reasons: [],
-            })
-          }
-        >
-          Add conflict source
-        </button>
       </fieldset>
     );
   },

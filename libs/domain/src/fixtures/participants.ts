@@ -15,4 +15,19 @@ export const sessionDog: Participant<'creature'> = {
     conditions: [{ruleId: 'blinded'}],
   },
   variationId: null,
+  groupIds: ['session-kennel-animals'],
+};
+
+export const sessionKennelAnimalsGroup: Participant<'group'> = {
+  id: 'session-kennel-animals',
+  name: 'Животные питомника',
+  setupId: 'setup-kennel-animals',
+  motivations: [
+    {
+      id: 'mot-kennel-escape',
+      value: 'Вырваться из питомника',
+    },
+  ],
+  type: 'group',
+  state: null,
 };

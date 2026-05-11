@@ -4,16 +4,18 @@ import type {CreatureStatblock} from '@lair/domain/manual/pf2e';
 import type {ParticipantSetup} from '@lair/domain/manual/prep';
 import type {Participant} from '@lair/domain/manual/running';
 import {
+  createCreatureParticipantFormEntry,
   createEncounterFormOptions,
+  createGroupParticipantFormEntry,
+  ensureGroupParticipant,
   withEncounterForm,
 } from './encounter-form.ts';
-import {deriveInitialCreatureState} from './helpers.ts';
 
 type ParticipantsSectionProps = {
-  availableSetups: ParticipantSetup<'creature'>[];
+  availableSetups: ParticipantSetup[];
   statblocks: Record<string, CreatureStatblock>;
-  sessionParticipants: Participant<'creature'>[];
-  setupsById: Record<string, ParticipantSetup<'creature'>>;
+  sessionParticipants: Participant[];
+  setupsById: Record<string, ParticipantSetup>;
 };
 
 const generateId = () =>
@@ -46,7 +48,13 @@ export const ParticipantsSection = withEncounterForm({
       form.store,
       (state) => state.values.participants,
     );
-
+    const groupSetups = useMemo(
+      () =>
+        availableSetups.filter(
+          (setup): setup is ParticipantSetup<'group'> => setup.type === 'group',
+        ),
+      [availableSetups],
+    );
     const usedSessionIds = useMemo(
       () => new Set(formParticipants.map((p) => p.id)),
       [formParticipants],
@@ -69,21 +77,211 @@ export const ParticipantsSection = withEncounterForm({
       }
     }
 
+    function removeReasonsForGroup(groupId: string) {
+      const group = form
+        .getFieldValue('participants')
+        .find(
+          (participant) =>
+            participant.type === 'group' && participant.id === groupId,
+        );
+      if (!group || group.type !== 'group') return;
+      const setup = setupsById[group.setupId];
+      if (setup?.type === 'group') {
+        for (const aspect of setup.concept.theme.aspects)
+          removeReasonFromAllSources(aspect.id);
+      }
+      for (const motivation of group.motivations)
+        removeReasonFromAllSources(motivation.id);
+    }
+
+    function cleanupReasonsForGroupUnlink(
+      groupId: string,
+      participantIndex: number,
+    ) {
+      const participants = form.getFieldValue('participants');
+      if (
+        participants.some(
+          (participant, index) =>
+            index !== participantIndex &&
+            participant.type === 'creature' &&
+            participant.groupIds.includes(groupId),
+        )
+      )
+        return;
+      removeReasonsForGroup(groupId);
+    }
+
+    function isGroupLinked(groupId: string) {
+      return form
+        .getFieldValue('participants')
+        .some(
+          (participant) =>
+            participant.type === 'creature' &&
+            participant.groupIds.includes(groupId),
+        );
+    }
+
     function cleanupReasonsForParticipantRemoval(index: number) {
-      const p = form.getFieldValue('participants')[index];
-      for (const m of p.motivations) removeReasonFromAllSources(m.id);
-      if (p.variationId) {
-        const s = setupsById[p.setupId];
-        const v = s?.meta.variations.find((v) => v.id === p.variationId);
-        if (v) removeReasonFromAllSources(v.aspect.id);
+      const participant = form.getFieldValue('participants')[index];
+      for (const motivation of participant.motivations)
+        removeReasonFromAllSources(motivation.id);
+
+      if (participant.type === 'group') {
+        removeReasonsForGroup(participant.id);
+        return;
       }
+
+      if (participant.variationId) {
+        const setup = setupsById[participant.setupId];
+        const variation =
+          setup?.type === 'creature'
+            ? setup.meta.variations.find(
+                (v) => v.id === participant.variationId,
+              )
+            : undefined;
+        if (variation) removeReasonFromAllSources(variation.aspect.id);
+      }
+
       const all = form.getFieldValue('participants');
-      if (!all.some((op, i) => i !== index && op.setupId === p.setupId)) {
-        const s = setupsById[p.setupId];
-        if (s)
-          for (const a of s.concept.theme.aspects)
-            removeReasonFromAllSources(a.id);
+      if (
+        !all.some(
+          (other, otherIndex) =>
+            otherIndex !== index &&
+            other.type === 'creature' &&
+            other.setupId === participant.setupId,
+        )
+      ) {
+        const setup = setupsById[participant.setupId];
+        if (setup)
+          for (const aspect of setup.concept.theme.aspects)
+            removeReasonFromAllSources(aspect.id);
       }
+
+      for (const groupId of participant.groupIds)
+        cleanupReasonsForGroupUnlink(groupId, index);
+    }
+
+    function ensureGroup(setupId: string) {
+      const nextValues = ensureGroupParticipant(
+        {
+          ...form.state.values,
+          participants: form.getFieldValue('participants'),
+        },
+        availableSetups,
+        sessionParticipants,
+        setupId,
+      );
+      if (nextValues.participants === form.getFieldValue('participants')) {
+        return form
+          .getFieldValue('participants')
+          .find(
+            (participant) =>
+              participant.type === 'group' && participant.setupId === setupId,
+          )?.id;
+      }
+
+      const group = nextValues.participants.find(
+        (participant) =>
+          participant.type === 'group' && participant.setupId === setupId,
+      );
+      if (group) form.pushFieldValue('participants', group);
+      return group?.id;
+    }
+
+    function groupIdForSetup(setupId: string) {
+      return (
+        formParticipants.find(
+          (participant) =>
+            participant.type === 'group' && participant.setupId === setupId,
+        )?.id ??
+        sessionParticipants.find(
+          (participant) =>
+            participant.type === 'group' && participant.setupId === setupId,
+        )?.id ??
+        setupId
+      );
+    }
+
+    function addSetupParticipant(setup: ParticipantSetup) {
+      if (setup.type === 'group') {
+        if (
+          form
+            .getFieldValue('participants')
+            .some(
+              (participant) =>
+                participant.type === 'group' &&
+                participant.setupId === setup.id,
+            )
+        )
+          return;
+        const sessionGroup = sessionParticipants.find(
+          (participant) =>
+            participant.type === 'group' && participant.setupId === setup.id,
+        );
+        form.pushFieldValue(
+          'participants',
+          createGroupParticipantFormEntry(
+            setup,
+            sessionGroup?.id,
+            sessionGroup?.motivations,
+          ),
+        );
+        return;
+      }
+
+      form.pushFieldValue(
+        'participants',
+        createCreatureParticipantFormEntry({
+          groupIds: setup.meta.groupIds
+            .map((setupId) => ensureGroup(setupId))
+            .filter((id): id is string => Boolean(id)),
+          id: generateId(),
+          motivations: [],
+          name: setup.name,
+          setup,
+          statblocks,
+        }),
+      );
+    }
+
+    function addSessionParticipant(participant: Participant) {
+      const setup = setupsById[participant.setupId];
+      if (participant.type === 'group') {
+        if (setup?.type !== 'group') return;
+        form.pushFieldValue(
+          'participants',
+          createGroupParticipantFormEntry(
+            setup,
+            participant.id,
+            participant.motivations,
+          ),
+        );
+        return;
+      }
+
+      if (setup?.type !== 'creature') return;
+      form.pushFieldValue(
+        'participants',
+        createCreatureParticipantFormEntry({
+          groupIds: participant.groupIds.map((groupId) => {
+            const sessionGroup = sessionParticipants.find(
+              (sessionParticipant) =>
+                sessionParticipant.type === 'group' &&
+                sessionParticipant.id === groupId,
+            );
+            return sessionGroup
+              ? (ensureGroup(sessionGroup.setupId) ?? groupId)
+              : groupId;
+          }),
+          id: participant.id,
+          motivations: participant.motivations,
+          name: participant.name,
+          setup,
+          state: participant.state,
+          statblocks,
+          variationId: participant.variationId,
+        }),
+      );
     }
 
     return (
@@ -114,17 +312,7 @@ export const ParticipantsSection = withEncounterForm({
             className="border border-(--lair-border) px-3 py-1 text-sm"
             onClick={() => {
               const setup = setupsById[selectedSetupId];
-              if (!setup) return;
-              form.pushFieldValue('participants', {
-                id: generateId(),
-                setupId: setup.id,
-                name: setup.name,
-                variationId: setup.meta.variations.length ? '' : undefined,
-                motivations: [],
-                state: deriveInitialCreatureState(
-                  statblocks[setup.meta.statblockId],
-                ),
-              });
+              if (setup) addSetupParticipant(setup);
             }}
           >
             Add from setup
@@ -154,9 +342,9 @@ export const ParticipantsSection = withEncounterForm({
                 {availableSessionParticipants.length === 0 ? (
                   <option value="">All session participants added</option>
                 ) : (
-                  availableSessionParticipants.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
+                  availableSessionParticipants.map((participant) => (
+                    <option key={participant.id} value={participant.id}>
+                      {participant.name}
                     </option>
                   ))
                 )}
@@ -168,18 +356,11 @@ export const ParticipantsSection = withEncounterForm({
               disabled={availableSessionParticipants.length === 0}
               onClick={() => {
                 const participant = sessionParticipants.find(
-                  (p) => p.id === selectedSessionParticipantId,
+                  (participant) =>
+                    participant.id === selectedSessionParticipantId,
                 );
                 if (!participant) return;
-                const setup = setupsById[participant.setupId];
-                form.pushFieldValue('participants', {
-                  id: participant.id,
-                  setupId: participant.setupId,
-                  name: participant.name,
-                  variationId: setup?.meta.variations.length ? '' : undefined,
-                  motivations: participant.motivations,
-                  state: participant.state,
-                });
+                addSessionParticipant(participant);
                 const remaining = availableSessionParticipants.filter(
                   (p) => p.id !== participant.id,
                 );
@@ -197,7 +378,6 @@ export const ParticipantsSection = withEncounterForm({
           {(participantsField) => (
             <ul className="flex flex-col gap-3">
               {participantsField.state.value.map((participant, index) => {
-                const setup = setupsById[participant.setupId];
                 return (
                   <li
                     key={participant.id}
@@ -209,7 +389,7 @@ export const ParticipantsSection = withEncounterForm({
                           <input
                             type="text"
                             aria-label="Participant name"
-                            className="text-sm font-bold bg-transparent border border-transparent hover:border-(--lair-border) focus:border-(--lair-border) px-1 py-0.5 outline-none"
+                            className="flex-1 text-sm font-bold bg-transparent border border-transparent hover:border-(--lair-border) focus:border-(--lair-border) px-1 py-0.5 outline-none"
                             value={nameField.state.value}
                             onChange={(event) =>
                               nameField.handleChange(event.target.value)
@@ -217,56 +397,162 @@ export const ParticipantsSection = withEncounterForm({
                           />
                         )}
                       </form.Field>
-                      <button
-                        type="button"
-                        className="text-xs border border-(--lair-border) px-2 py-0.5"
-                        onClick={() => {
-                          cleanupReasonsForParticipantRemoval(index);
-                          void form.removeFieldValue('participants', index);
+                      <form.Subscribe
+                        selector={(state) => {
+                          const participant = state.values.participants[index];
+                          return (
+                            participant.type === 'group' &&
+                            isGroupLinked(participant.id)
+                          );
                         }}
                       >
-                        Remove participant
-                      </button>
+                        {(removeDisabled) => (
+                          <button
+                            type="button"
+                            disabled={removeDisabled}
+                            title={
+                              removeDisabled
+                                ? 'Remove group links from creatures first'
+                                : undefined
+                            }
+                            className="text-xs border border-(--lair-border) px-2 py-0.5 disabled:opacity-50"
+                            onClick={() => {
+                              if (removeDisabled) return;
+                              cleanupReasonsForParticipantRemoval(index);
+                              participantsField.removeValue(index);
+                            }}
+                          >
+                            Remove participant
+                          </button>
+                        )}
+                      </form.Subscribe>
                     </div>
 
-                    {setup &&
-                      setup.meta.variations.length > 0 &&
-                      participant.variationId !== undefined && (
-                        <form.Field name={`participants[${index}].variationId`}>
-                          {(variationField) => (
-                            <label className="flex flex-col gap-1">
-                              <span className="text-xs">Variation</span>
-                              <select
-                                aria-label="Variation"
-                                className="border border-(--lair-border) bg-transparent px-2 py-1 text-sm"
-                                value={variationField.state.value ?? ''}
-                                onChange={(event) => {
-                                  const oldId = variationField.state.value;
-                                  if (oldId) {
-                                    const oldVar = setup.meta.variations.find(
-                                      (v) => v.id === oldId,
-                                    );
-                                    if (oldVar)
-                                      removeReasonFromAllSources(
-                                        oldVar.aspect.id,
-                                      );
-                                  }
-                                  variationField.handleChange(
-                                    event.target.value,
-                                  );
-                                }}
+                    <form.Subscribe
+                      selector={(state) => {
+                        const participant = state.values.participants[index];
+                        return {
+                          participant,
+                          setup: setupsById[participant.setupId],
+                        };
+                      }}
+                    >
+                      {({participant, setup}) =>
+                        participant.type === 'creature' &&
+                        setup.type === 'creature' && (
+                          <>
+                            {Boolean(setup.meta.variations.length) && (
+                              <form.Field
+                                name={`participants[${index}].variationId`}
                               >
-                                <option value="">None</option>
-                                {setup.meta.variations.map((v) => (
-                                  <option key={v.id} value={v.id}>
-                                    {v.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                          )}
-                        </form.Field>
-                      )}
+                                {(variationField) => (
+                                  <label className="flex flex-col gap-1">
+                                    <span className="text-xs">Variation</span>
+                                    <select
+                                      aria-label="Variation"
+                                      className="border border-(--lair-border) bg-transparent px-2 py-1 text-sm"
+                                      value={variationField.state.value ?? ''}
+                                      onChange={(event) => {
+                                        const oldId =
+                                          variationField.state.value;
+                                        if (oldId) {
+                                          const oldVar =
+                                            setup.meta.variations.find(
+                                              (variation) =>
+                                                variation.id === oldId,
+                                            );
+                                          if (oldVar)
+                                            removeReasonFromAllSources(
+                                              oldVar.aspect.id,
+                                            );
+                                        }
+                                        variationField.handleChange(
+                                          event.target.value,
+                                        );
+                                      }}
+                                    >
+                                      <option value="">None</option>
+                                      {setup.meta.variations.map(
+                                        (variation) => (
+                                          <option
+                                            key={variation.id}
+                                            value={variation.id}
+                                          >
+                                            {variation.name}
+                                          </option>
+                                        ),
+                                      )}
+                                    </select>
+                                  </label>
+                                )}
+                              </form.Field>
+                            )}
+                            {Boolean(groupSetups.length) && (
+                              <form.Field
+                                name={`participants[${index}].groupIds`}
+                              >
+                                {(groupIdsField) => (
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-xs">Groups</span>
+                                    <div className="flex flex-col gap-1">
+                                      {groupSetups.map((groupSetup) => {
+                                        const groupId = groupIdForSetup(
+                                          groupSetup.id,
+                                        );
+                                        return (
+                                          <label
+                                            key={groupSetup.id}
+                                            className="flex items-center gap-2 text-xs"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={groupIdsField.state.value.includes(
+                                                groupId,
+                                              )}
+                                              onChange={(event) => {
+                                                if (event.target.checked) {
+                                                  const ensuredId = ensureGroup(
+                                                    groupSetup.id,
+                                                  );
+                                                  if (
+                                                    ensuredId &&
+                                                    !groupIdsField.state.value.includes(
+                                                      ensuredId,
+                                                    )
+                                                  ) {
+                                                    groupIdsField.handleChange([
+                                                      ...groupIdsField.state
+                                                        .value,
+                                                      ensuredId,
+                                                    ]);
+                                                  }
+                                                  return;
+                                                }
+
+                                                groupIdsField.handleChange(
+                                                  groupIdsField.state.value.filter(
+                                                    (id) => id !== groupId,
+                                                  ),
+                                                );
+                                                cleanupReasonsForGroupUnlink(
+                                                  groupId,
+                                                  index,
+                                                );
+                                              }}
+                                            />
+                                            <span>{groupSetup.name}</span>
+                                          </label>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                              </form.Field>
+                            )}
+                          </>
+                        )
+                      }
+                    </form.Subscribe>
 
                     <form.Field
                       name={`participants[${index}].motivations`}
@@ -276,13 +562,13 @@ export const ParticipantsSection = withEncounterForm({
                         <div className="flex flex-col gap-2">
                           <ul className="flex flex-col gap-1">
                             {motivationsField.state.value.map(
-                              (motivation, mIndex) => (
+                              (motivation, motivationIndex) => (
                                 <li
                                   key={motivation.id}
                                   className="flex items-center gap-2"
                                 >
                                   <form.Field
-                                    name={`participants[${index}].motivations[${mIndex}].value`}
+                                    name={`participants[${index}].motivations[${motivationIndex}].value`}
                                   >
                                     {(valueField) => (
                                       <label className="flex flex-col gap-1 flex-1">
@@ -307,9 +593,8 @@ export const ParticipantsSection = withEncounterForm({
                                     className="text-xs border border-(--lair-border) px-2 py-0.5"
                                     onClick={() => {
                                       removeReasonFromAllSources(motivation.id);
-                                      void form.removeFieldValue(
-                                        `participants[${index}].motivations`,
-                                        mIndex,
+                                      motivationsField.removeValue(
+                                        motivationIndex,
                                       );
                                     }}
                                   >
@@ -323,10 +608,10 @@ export const ParticipantsSection = withEncounterForm({
                             type="button"
                             className="self-start text-xs border border-(--lair-border) px-2 py-0.5"
                             onClick={() =>
-                              form.pushFieldValue(
-                                `participants[${index}].motivations`,
-                                {id: generateId(), value: ''},
-                              )
+                              motivationsField.pushValue({
+                                id: generateId(),
+                                value: '',
+                              })
                             }
                           >
                             Add motivation

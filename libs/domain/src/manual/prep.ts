@@ -25,7 +25,7 @@ export namespace ParticipantSetup {
 
 export type ParticipantType = 'creature' | 'group';
 
-type ParticipantConcept = {
+export type ParticipantConcept = {
   references: string;
   theme: ParticipantTheme;
   abilities: string[];

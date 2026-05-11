@@ -1,9 +1,14 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, fn, userEvent, within} from 'storybook/test';
-import {sessionDog} from '@lair/domain/fixtures/participants';
+import {
+  sessionDog,
+  sessionKennelAnimalsGroup,
+} from '@lair/domain/fixtures/participants';
 import {
   dogSetup,
   dogSetupWithVariation,
+  kennelAnimalsGroupSetup,
+  pitomnikEncounterSetup,
   ratSetup,
 } from '@lair/domain/fixtures/setups';
 import {
@@ -21,12 +26,17 @@ const meta = {
   component: EncounterInitiation,
   parameters: {layout: 'centered'},
   args: {
-    availableSetups: [dogSetup, dogSetupWithVariation, ratSetup],
+    availableSetups: [
+      dogSetup,
+      dogSetupWithVariation,
+      ratSetup,
+      kennelAnimalsGroupSetup,
+    ],
     statblocks: {
       [petrifiedDogStatblock.id]: petrifiedDogStatblock,
       [petrifiedRatStatblock.id]: petrifiedRatStatblock,
     },
-    sessionParticipants: [sessionDog],
+    sessionParticipants: [sessionDog, sessionKennelAnimalsGroup],
     onSubmit: fn(),
     onCancel: fn(),
   },
@@ -40,7 +50,7 @@ export const Default: Story = {};
 
 export const FillsAndSubmits: Story = {
   args: {
-    availableSetups: [dogSetup, ratSetup],
+    availableSetups: [dogSetup, ratSetup, kennelAnimalsGroupSetup],
     sessionParticipants: [],
   },
   play: async ({canvas, args}) => {
@@ -61,10 +71,12 @@ export const FillsAndSubmits: Story = {
     const participantScope = within(participantsList);
 
     await userEvent.click(
-      participantScope.getByRole('button', {name: /add motivation/i}),
+      participantScope
+        .getAllByRole('button', {name: /add motivation/i})
+        .at(-1)!,
     );
     await userEvent.type(
-      participantScope.getByRole('textbox', {name: /motivation/i}),
+      participantScope.getAllByRole('textbox', {name: /motivation/i}).at(-1)!,
       'Guard the doorway',
     );
 
@@ -94,6 +106,7 @@ export const FillsAndSubmits: Story = {
             setupId: dogSetup.id,
             name: dogSetup.name,
             variationId: null,
+            groupIds: [kennelAnimalsGroupSetup.id],
             type: 'creature',
             state: expect.objectContaining({
               maxHp: petrifiedDogStatblock.hitPoints.value,
@@ -126,9 +139,11 @@ export const R2FillsAndSubmits: Story = {
     const participantsList = canvas.getByRole('group', {name: /participants/i});
     const participantScope = within(participantsList);
 
-    const nameInput = participantScope.getByRole('textbox', {
-      name: /participant name/i,
-    });
+    const nameInput = participantScope
+      .getAllByRole('textbox', {
+        name: /participant name/i,
+      })
+      .at(-1)!;
     await userEvent.clear(nameInput);
     await userEvent.type(nameInput, 'Aggressive Dog');
 
@@ -138,10 +153,12 @@ export const R2FillsAndSubmits: Story = {
     );
 
     await userEvent.click(
-      participantScope.getByRole('button', {name: /add motivation/i}),
+      participantScope
+        .getAllByRole('button', {name: /add motivation/i})
+        .at(-1)!,
     );
     await userEvent.type(
-      participantScope.getByRole('textbox', {name: /motivation/i}),
+      participantScope.getAllByRole('textbox', {name: /motivation/i}).at(-1)!,
       'Protect territory',
     );
 
@@ -214,6 +231,103 @@ export const R2FillsAndSubmits: Story = {
             motivations: expect.arrayContaining([
               expect.objectContaining({value: 'Охраняет вход'}),
             ]),
+          }),
+        ]),
+      }),
+    );
+  },
+};
+
+export const R3SeededFromSetup: Story = {
+  args: {
+    availableSetups: [dogSetup, ratSetup, kennelAnimalsGroupSetup],
+    sessionParticipants: [sessionKennelAnimalsGroup],
+    encounterSetup: pitomnikEncounterSetup,
+  },
+  play: async ({canvas, args}) => {
+    await expect(
+      canvas.getByDisplayValue(
+        pitomnikEncounterSetup.potentialDramaticQuestion,
+      ),
+    ).toBeInTheDocument();
+
+    await expect(
+      canvas.getByDisplayValue(
+        pitomnikEncounterSetup.participants[0].name ?? '',
+      ),
+    ).toBeInTheDocument();
+
+    const participantsList = canvas.getByRole('group', {name: /participants/i});
+    const participantScope = within(participantsList);
+
+    const seededMotivation = participantScope.getByDisplayValue(
+      'Прекратить шум в питомнике',
+    );
+    await userEvent.clear(seededMotivation);
+    await userEvent.type(seededMotivation, 'Keep the room quiet');
+
+    const groupMemberships = participantScope.getAllByRole('checkbox', {
+      name: kennelAnimalsGroupSetup.name,
+    });
+    await userEvent.click(groupMemberships[0]);
+
+    await userEvent.click(
+      canvas.getByRole('button', {name: /add conflict source/i}),
+    );
+    await userEvent.type(
+      canvas.getByRole('textbox', {name: /opposition/i}),
+      'The panicked pack blocks the passage',
+    );
+
+    const conflictSourcesList = canvas.getByRole('group', {
+      name: /conflict sources/i,
+    });
+    const conflictScope = within(conflictSourcesList);
+    await userEvent.selectOptions(
+      conflictScope.getByRole('combobox', {name: /link reason/i}),
+      kennelAnimalsGroupSetup.concept.theme.aspects[0].id,
+    );
+    await userEvent.click(conflictScope.getByRole('button', {name: /^link$/i}));
+
+    await userEvent.click(canvas.getByRole('button', {name: /confirm/i}));
+
+    await expect(args.onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        encounter: expect.objectContaining({
+          dramaticQuestion: pitomnikEncounterSetup.potentialDramaticQuestion,
+          conflictSources: [
+            expect.objectContaining({
+              opposition: 'The panicked pack blocks the passage',
+              reasons: [
+                {
+                  type: 'aspect',
+                  id: kennelAnimalsGroupSetup.concept.theme.aspects[0].id,
+                },
+              ],
+            }),
+          ],
+        }),
+        participants: expect.arrayContaining([
+          expect.objectContaining({
+            id: sessionKennelAnimalsGroup.id,
+            setupId: kennelAnimalsGroupSetup.id,
+            name: kennelAnimalsGroupSetup.name,
+            motivations: sessionKennelAnimalsGroup.motivations,
+            type: 'group',
+            state: null,
+          }),
+          expect.objectContaining({
+            id: pitomnikEncounterSetup.participants[0].id,
+            setupId: dogSetup.id,
+            motivations: [
+              expect.objectContaining({value: 'Keep the room quiet'}),
+            ],
+            groupIds: [],
+          }),
+          expect.objectContaining({
+            id: pitomnikEncounterSetup.participants[1].id,
+            setupId: dogSetup.id,
+            groupIds: [sessionKennelAnimalsGroup.id],
           }),
         ]),
       }),

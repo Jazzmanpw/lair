@@ -31,8 +31,33 @@ export const dogSetup: ParticipantSetup<'creature'> = {
   meta: {
     statblockId: 'okamenevshaya-sobaka-tyangu',
     variations: [],
-    groupIds: [],
+    groupIds: ['setup-kennel-animals'],
   },
+};
+
+export const kennelAnimalsGroupSetup: ParticipantSetup<'group'> = {
+  id: 'setup-kennel-animals',
+  name: 'Животные питомника',
+  concept: {
+    references: 'Группа окаменевших животных в питомнике',
+    theme: {
+      aspects: [
+        {
+          id: 'kennel-pack-fear',
+          value: 'Общий страх и боль держат их вместе',
+        },
+        {
+          id: 'kennel-trapped',
+          value: 'Заперты в комнате и ищут выход',
+        },
+      ],
+      role: 'действуют как стая, когда появляется шум или угроза',
+      feeling: 'паника',
+    },
+    abilities: ['Срываются на движение друг друга'],
+  },
+  type: 'group',
+  meta: null,
 };
 
 export const ratSetup: ParticipantSetup<'creature'> = {
@@ -54,7 +79,7 @@ export const ratSetup: ParticipantSetup<'creature'> = {
   meta: {
     statblockId: 'okamenevshaya-krysa-tyangu',
     variations: [],
-    groupIds: [],
+    groupIds: ['setup-kennel-animals'],
   },
 };
 
@@ -90,7 +115,12 @@ export const pitomnikEncounterSetup: EncounterSetup = {
       name: 'Окаменевшая собака 1',
       setupId: 'setup-okamenevshaya-sobaka',
       variationId: null,
-      motivations: [],
+      motivations: [
+        {
+          id: 'mot-sobaka-1-noise',
+          value: 'Прекратить шум в питомнике',
+        },
+      ],
     },
     {
       id: 'izl-pitomnik-sobaka-2',

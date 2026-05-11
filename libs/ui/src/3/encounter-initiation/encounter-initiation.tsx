@@ -1,6 +1,6 @@
 import {useMemo} from 'react';
 import type {CreatureStatblock} from '@lair/domain/manual/pf2e';
-import type {ParticipantSetup} from '@lair/domain/manual/prep';
+import type {EncounterSetup, ParticipantSetup} from '@lair/domain/manual/prep';
 import type {Participant} from '@lair/domain/manual/running';
 import {ConflictSourcesSection} from './conflict-sources-section.tsx';
 import {
@@ -12,9 +12,10 @@ import {
 import {ParticipantsSection} from './participants-section.tsx';
 
 export type EncounterInitiationProps = {
-  availableSetups: ParticipantSetup<'creature'>[];
+  availableSetups: ParticipantSetup[];
   statblocks: Record<string, CreatureStatblock>;
-  sessionParticipants: Participant<'creature'>[];
+  sessionParticipants: Participant[];
+  encounterSetup?: EncounterSetup;
   onSubmit: (result: ResolvedEncounterDraft) => void;
   onCancel: () => void;
 };
@@ -23,6 +24,7 @@ export default function EncounterInitiation({
   availableSetups,
   statblocks,
   sessionParticipants,
+  encounterSetup,
   onSubmit,
   onCancel,
 }: EncounterInitiationProps) {
@@ -32,7 +34,12 @@ export default function EncounterInitiation({
   );
 
   const form = useEncounterForm({
-    ...createEncounterFormOptions(),
+    ...createEncounterFormOptions({
+      availableSetups,
+      encounterSetup,
+      sessionParticipants,
+      statblocks,
+    }),
     onSubmit: ({value}) => {
       onSubmit(EncounterDraftSchema.parse(value));
     },

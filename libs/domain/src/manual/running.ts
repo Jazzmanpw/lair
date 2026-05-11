@@ -22,7 +22,7 @@ export namespace Participant {
       type: T;
       state: State<T>;
     };
-  } & {creature: {variationId: string | null}})[Type];
+  } & {creature: {variationId: string | null; groupIds: string[]}})[Type];
 
   export type State<Type extends ParticipantType> = {
     creature: CreatureState;
