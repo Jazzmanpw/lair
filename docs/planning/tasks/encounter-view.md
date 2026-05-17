@@ -27,11 +27,6 @@ reading-focused. Navigation between the encounter, its participants, and their
 linked content should be instant. The view should surface prep context, not
 bury it.
 
-## Depends On
-
-[Initiate Encounter](./initiate-encounter.md) — runtime types, session model,
-and the encounter creation flow must exist before we can view an encounter.
-
 ## Views To Build
 
 ### 1. Encounter without initiative
@@ -95,20 +90,121 @@ The encounter-without-initiative content doesn't disappear — it gains a
 tactical layer. The dramatic question and conflict sources remain visible and
 central.
 
+## Exploration Findings (2026-05-11)
+
+### Encounter ↔ participant relationship
+
+The encounter does **not** store a participant roster. Conflict source reasons
+(aspect/motivation references) are the link — if a participant's A/M drives a
+conflict source, they're "in" the encounter. This is intentional: a participant
+without a stake in any conflict source doesn't belong in the encounter.
+
+The encounter view shows **all session participants**, with A/Ms relevant to the
+active encounter highlighted. Roster management is a session-level concern, not
+an encounter-level one. Initiative roster is a separate thing entirely (Phase 3).
+
+Edge cases (participant in session but irrelevant, e.g. in another room) can be
+solved later — manual exclusion, or just showing everyone and letting the GM
+ignore. For POC/MVP, showing all session participants all the time is fine.
+
+### Domain updates needed
+
+**ConflictSource** needs `id: string` and `resolved: boolean`. The task asks for
+resolve/unresolve but the current type is just `{opposition, reasons[]}`.
+
+**InitiativeFlow** — deferred to Phase 3. No point designing it in advance.
+
+**No other type changes.** `Encounter` does not get `participantIds`. Participant
+derivation is a view-level concern using conflict source reasons.
+
+A utility function to derive encounter-relevant participants from conflict source
+reasons would be useful (maps reason IDs back to participants via their
+aspects/motivations).
+
+### Existing v3 components — what carries forward
+
+**Visual language carries forward:** the dark-forest palette, border treatments,
+typography (font vars, sizing, tracking), the gold accent color. These are the
+Lair identity.
+
+**Components need rewriting:**
+
+- **Creature statblock** (`libs/ui/src/3/creature-statblock.tsx`) renders an old
+  type shape (`header`/`description`/`perception`/`defense`/`offense` sections).
+  The current `CreatureStatblock` type in `pf2e.ts` has a different structure
+  (`perception`, `skills`, `attributes`, `armorClass`, `savingThrows`, etc.).
+  Needs a full rewrite against current types.
+- **Creature combat card** (`libs/ui/src/3/creature-combat-card.tsx`) has good
+  interaction patterns (HP +/− input, condition chips, reaction toggle) worth
+  carrying forward conceptually. Uses old types though.
+- **Scene page layout** (`libs/ui/src/3/scene-page-layout.tsx`) is built for the
+  old `Scene` domain. The shell concept (header, content area, sidebar) is a
+  starting point, but the data model it renders is completely different.
+
+**Base-ui is not installed.** Hover previews need it (or an equivalent). The v3
+combat card uses a hand-rolled portal popup that can't handle nesting.
+
+### Draft phases
+
+**Phase 1 — domain tweaks + fixtures.** ConflictSource gets `id` + `resolved`.
+Encounter-initiation form output updated accordingly. Utility to derive
+encounter-relevant participants from conflict source reasons. Fixture enrichment:
+pre-resolved conflict source, tactical state variety across participants.
+
+**Phase 2 — v4 running layout + encounter view (no initiative).** New iteration
+for the running layout, keeping the visual language. Install base-ui for hover
+previews. Statblock rewrite against current types. Encounter situation board:
+dramatic question, conflict sources (add/edit/resolve), all session participants
+with encounter-relevant A/Ms highlighted. Tactical state editing for any
+participant (not gated by initiative). Hover preview for participant detail
+(statblock, concept, motivations).
+
+**Phase 3 — initiative layer.** `InitiativeFlow` type on Session. Pure functions
+(`startInitiative`, `setActiveParticipant`, `endInitiative`). Turn order, active
+participant highlight, advance turn. Initiative adds to the encounter view, does
+not replace it. One initiative flow per session (shared across parallel
+encounters if they ever exist).
+
+### Open unknown: overall running view layout
+
+The v3 scene page layout was built around Scenes (a location with an encounter
+tab, skill checks, traps, treasures). The new model is Session → Participants +
+Encounters. The encounter is the primary surface, not a tab within a scene.
+
+What does the v4 running layout look like? Key questions:
+
+- What's the primary content area vs. what's secondary/peripheral?
+- Where do non-encounter session participants live?
+- How does scene information (flavor text, room description, linked scenes)
+  relate to the encounter-first layout — is it a collapsible header, a sidebar,
+  something else?
+- Does the layout change when initiative starts, or does it absorb initiative
+  inline?
+- How much of the screen does the encounter claim? The task says "it becomes the
+  center of attention" but that's vague.
+
+This needs a design conversation before Phase 2 implementation begins.
+
 ## Domain Work
 
-### Types to add (on top of initiate-encounter task)
+### Types to update
+
+- `ConflictSource` — add `id: string`, `resolved: boolean`
+
+### Types to add (Phase 3)
 
 - `InitiativeFlow` — turn order, active participant ID, round number. Lives
   on the session, not on any encounter.
 
 ### Functions to add
 
-- `startInitiative(participantIds, session)` → session with initiative flow
-- `setActiveParticipant(participantId, session)` → session with the given
-  participant as active (no sequential advance — the GM picks arbitrarily)
-- `endInitiative(session)` → session without initiative flow (participants
-  and encounters unchanged)
+- `isReasonLinkedToEncounter(reasonId, encounter)` → whether an aspect or
+  motivation drives a conflict source in this encounter (for per-item highlight)
+- Phase 3: `startInitiative(participantIds, session)` → session with initiative
+  flow
+- Phase 3: `setActiveParticipant(participantId, session)` → session with the
+  given participant as active (no sequential advance — the GM picks arbitrarily)
+- Phase 3: `endInitiative(session)` → session without initiative flow
 
 ## UI Work
 
@@ -122,21 +218,25 @@ Design considerations:
 - Dramatic question should always be visible — it's the anchor.
 - Conflict sources should be scannable — short opposition text, participant
   label, resolved/active status.
-- Participant list should support quick navigation to detail.
+- All session participants visible, encounter-relevant A/Ms highlighted.
+- Tactical state editable for any participant, even without initiative.
 - Initiative layer should add to the view, not replace it.
 
 ### Participant detail navigation
 
-Clicking/hovering a participant in the encounter view should give fast access
-to:
+Hover preview is the primary candidate — fast access to:
 
-- statblock (or the relevant parts of it);
+- statblock (rewritten against current `CreatureStatblock` type);
 - full concept and motivation list;
 - tactical state editing.
 
-The exact interaction pattern (hover preview, side panel, inline expand) is a
-design decision for this task. The earlier hover preview work
-(base-ui-and-hover-previews task) may inform this.
+Requires base-ui (or equivalent) for proper popover positioning and nesting.
+
+### Running layout (v4)
+
+New iteration. Keep visual language (palette, fonts, border treatments). Redesign
+the layout for the session/encounter model. **Blocked on the layout design
+conversation** (see Open Unknown above).
 
 ## What Not To Build Yet
 

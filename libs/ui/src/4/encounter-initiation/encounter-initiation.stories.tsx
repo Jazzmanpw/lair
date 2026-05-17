@@ -22,7 +22,7 @@ import EncounterInitiation, {
 type StoryArgs = EncounterInitiationProps;
 
 const meta = {
-  title: 'Iteration 3/Encounter Initiation',
+  title: 'Iteration 4/Encounter Initiation',
   component: EncounterInitiation,
   parameters: {layout: 'centered'},
   args: {

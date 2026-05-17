@@ -77,6 +77,35 @@ The app's encounter model follows the Angry GM framework:
 This framework shapes how encounters are prepared, opened, tracked, and closed
 in the app. It is not optional flavor — it is the structural foundation.
 
+### Running mode: information tiers and editability
+
+In Running mode, information falls into three tiers:
+
+- **Immediate** — visible without any interaction. The GM glances at the screen
+  and has it. This is the smallest, most curated set: the things the GM needs
+  _right now_ to keep the game moving.
+- **Low-overhead** — one interaction away (a hover, a click, a toggle). Available
+  fast, but not competing for screen space with the immediate tier. This is the
+  "I need this sometimes" layer: full statblocks, detailed concept breakdowns,
+  related scene info.
+- **Eventually** — reachable through navigation. Not buried, but not on the
+  current screen either. Full prep history, other scenes, building-mode editing.
+
+**Determining which information belongs in which tier is the central design
+question for every Running mode screen.** The tiers themselves are
+straightforward; the hard work is classifying the data correctly for each
+context. A dramatic question is immediate during an encounter; a creature's full
+statblock is low-overhead; the encounter setup's original notes are eventually.
+These classifications shift — when initiative is active, tactical state moves
+from low-overhead to immediate.
+
+All information should be editable. Running mode is reading-focused, but the GM
+needs to correct, adjust, and annotate on the fly. Important structural data that
+rarely changes (a creature's base statblock, an encounter's dramatic question)
+should have a small guard against accidental edits — not a modal, just enough
+friction to prevent a misclick. Ephemeral runtime data (HP, conditions, notes)
+should edit with zero friction.
+
 ### Beauty signals correctness
 
 A tool the GM reaches for mid-session must feel fluid and trustworthy. Polish
