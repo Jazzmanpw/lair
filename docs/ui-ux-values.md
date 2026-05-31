@@ -80,6 +80,17 @@ Dense doesn't mean cramped. Breathing room comes from consistent spacing tokens,
 clear visual hierarchy, and grouping — not from generous padding or whitespace.
 Every pixel should earn its place.
 
+### Keyboard Navigation
+
+Keyboard access is a core part of the app's running-mode UX, especially for
+overlays, modals, lenses, and frequently toggled panels. Interactions should be
+memorizable and fast: the GM should be able to open the same reference surface
+repeatedly without hunting through the UI.
+
+Do not rely on press-and-hold shortcuts for sustained reading. Prefer tap/toggle
+shortcuts that open a stable surface, then close or switch it with another
+deliberate key.
+
 ## Component Intentions
 
 ### Scene Page Layout
