@@ -31,7 +31,27 @@ Read these before prototyping:
 - `libs/ui/src/3/creature-combat-card.tsx`
 
 The v3 UI files are reference material for visual language and interaction
-patterns, not current-domain implementations.
+patterns, not current-domain implementations. They show **one** layout
+strategy. Do not converge on that strategy — study it, then explore
+alternatives.
+
+The screenshots in `running-mode-screen-assets/` show the v3 layout rendered:
+exploration mode, encounter mode, and a typical statblock. Use them to
+understand how much space v3 allocates and where it feels tight or wasteful, but
+treat them as one data point, not a starting template.
+
+## Data Budget
+
+`running-mode-screen-assets/data-budget.md` documents the concrete data volume
+each zone must handle: character counts, line counts, item counts, and row
+heights derived from real adventure content.
+
+**Read the data budget before designing any layout.** Space allocation must be
+justified by the amount of content each zone actually holds. Guessing
+proportions without knowing data volume produces generic layouts.
+
+The data budget describes content volume only. It does not prescribe layout
+strategy, zone placement, or which zones should be combined or separated.
 
 ## Core Model
 
@@ -355,26 +375,69 @@ Known gaps for the next implementation task:
   not have to equal the party's exact tracked location, and the prototype should
   not introduce per-creature location tracking.
 
-## Prototype Guidance
+## Prototype Task
 
-The next prototype should focus on the running screen, not an encounter panel.
+### Deliverable
 
-It should answer:
+Produce **5 distinct layout prototypes** as separate Storybook components in
+`libs/ui/src/4/running-mode/`. Each prototype should use a fundamentally
+different spatial strategy for arranging the same content zones.
 
-- Can the GM scan room prompts, triggers, and session participants at once
-  without all reminders becoming equally loud?
-- Does an active encounter add dramatic question and conflict sources without
-  burying scene context?
-- Does the A/M surface work as one-click behavioral reference?
-- Do participant groups make encounter relevance obvious?
-- Can a tactics-first layout or overlay expose Flow/Roster/Actor/Interrupts
-  without losing exploration context?
-- Can scene focus change independently from active encounter/session state?
+Name them `layout-a.tsx` through `layout-e.tsx`, each with a corresponding
+`.stories.tsx`. All stories go under `Iteration 4/Running Mode/`.
 
-Avoid:
+### What "Distinct" Means
 
-- automatic layout switching;
-- whole-page scrolling;
-- location tracking for every creature;
-- making the full statblock the primary running surface;
-- treating initiative as the only way to enter tactical view.
+Each layout should make a different bet about:
+
+- **Primary axis:** which content gets the most space and the best position?
+- **Grouping:** which zones are combined, split, or nested differently?
+- **Navigation model:** what is visible by default vs. behind a tab, drawer,
+  lens, or overlay? Where does the layout use density vs. interaction?
+- **Tactical integration:** how does tactical state enter the layout — mode
+  switch, overlay, inline expansion, dedicated column, or something else?
+
+Do not produce five variations of the same grid with minor column-width changes.
+Each layout should feel like a different answer to "what does the GM look at
+first?"
+
+### Using FPO Blocks
+
+Import `Fpo` from `../fpo.tsx` (copied from v3 into `libs/ui/src/4/fpo.tsx`). Every content zone is an FPO block with a
+descriptive label. No real data rendering in this round — only spatial
+structure.
+
+Each FPO block label should name the zone and hint at its content volume (e.g.,
+"Room Prompts — 4-5 bullets, ~160px" or "Participants — 6 creatures + 1 group,
+~300px"). Use the data budget for these hints.
+
+### Stories Per Layout
+
+Each layout needs stories showing these states:
+
+- **Exploration, no encounter** — the baseline running screen.
+- **Exploration with encounter** — encounter context is present but the GM is
+  focused on the room.
+- **Tactics active** — initiative is running, tactical state is foregrounded.
+
+The layout can handle state transitions differently: some layouts may use the
+same grid for all three, some may switch modes, some may use overlays. The
+stories should show how each state looks.
+
+### What to Avoid
+
+- Do not reproduce the v3 layout. It is one reference point, not a target.
+- Do not render real data. FPO blocks only.
+- Do not build interaction logic (no state, no handlers beyond layout-mode
+  toggles if the layout uses them).
+- Do not introduce domain types or fixtures in this round.
+- No page-level scrolling. Fixed viewport. Independently scrollable panels
+  where needed.
+
+### What to Prioritize
+
+- Space allocation justified by data budget numbers.
+- Clear visual hierarchy: which zones dominate, which are secondary.
+- Each layout should be a genuinely different spatial hypothesis worth
+  evaluating.
+- The transition from exploration to tactics should be visible in the stories.
