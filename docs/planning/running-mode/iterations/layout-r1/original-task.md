@@ -35,14 +35,14 @@ patterns, not current-domain implementations. They show **one** layout
 strategy. Do not converge on that strategy — study it, then explore
 alternatives.
 
-The screenshots in `running-mode-screen-assets/` show the v3 layout rendered:
+The screenshots beside this file show the v3 layout rendered:
 exploration mode, encounter mode, and a typical statblock. Use them to
 understand how much space v3 allocates and where it feels tight or wasteful, but
 treat them as one data point, not a starting template.
 
 ## Data Budget
 
-`running-mode-screen-assets/data-budget.md` documents the concrete data volume
+`data-budget.md` documents the concrete data volume
 each zone must handle: character counts, line counts, item counts, and row
 heights derived from real adventure content.
 
@@ -380,11 +380,11 @@ Known gaps for the next implementation task:
 ### Deliverable
 
 Produce **5 distinct layout prototypes** as separate Storybook components in
-`libs/ui/src/4/running-mode/`. Each prototype should use a fundamentally
+`libs/ui/src/4/running-mode-layout-r1/`. Each prototype should use a fundamentally
 different spatial strategy for arranging the same content zones.
 
 Name them `layout-a.tsx` through `layout-e.tsx`, each with a corresponding
-`.stories.tsx`. All stories go under `Iteration 4/Running Mode/`.
+`.stories.tsx`. All stories go under `Iteration 4/Running Mode Layout R1/`.
 
 ### What "Distinct" Means
 
