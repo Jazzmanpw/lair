@@ -30,3 +30,4 @@ Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; 
 - In Codex sandbox sessions, run Nx with `TMPDIR=/tmp TMP=/tmp TEMP=/tmp NX_DAEMON=false NX_ISOLATE_PLUGINS=false`
 - `tools/package.json` points `@lair/tools/plugin` at `tools/src/plugin-shim.cjs`, a tiny CommonJS shim that loads `tools/src/plugin.ts` through `jiti`
 - The shim avoids the local-plugin SWC/ESM issues on both local machines and in Codex; the extra temp and isolation env vars are still needed because Nx plugins and `tsx` otherwise try to use sandbox-incompatible temp/process behavior
+- On native Windows, UI browser tests automatically use the installed Chrome channel when `CODEX_SHELL=1`; the Windows sandbox blocks Playwright's downloaded Chromium executable under `%LOCALAPPDATA%\ms-playwright`

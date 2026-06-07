@@ -36,7 +36,12 @@ export default defineConfig({
           browser: {
             enabled: true,
             headless: true,
-            provider: playwright({}),
+            provider: playwright({
+              launchOptions:
+                process.platform === 'win32' && process.env.CODEX_SHELL === '1'
+                  ? {channel: 'chrome'}
+                  : undefined,
+            }),
             instances: [{browser: 'chromium'}],
           },
         },
