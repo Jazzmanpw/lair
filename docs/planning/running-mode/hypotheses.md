@@ -80,22 +80,6 @@ prep/reference material in the right column, and participants plus active
 session work in the remaining body. Check whether prep still feels immediate
 enough during exploration.
 
-## Participant cards want narrow columns and vertical growth
-
-**Hypothesis:** Participant rosters work best as card-like lists in narrow
-columns, with cards growing vertically for details rather than horizontally.
-
-**Why it seems plausible:** Participant rows contain mixed data: name, type, HP,
-conditions, reaction, group, and possibly relevance/motivation hints. This shape
-fits compact cards better than wide prose rows. Feedback suggested roughly 1/6
-of screen width as a plausible upper bound for participant cards.
-
-**Would affect:** Roster column width, participant card internals, actor-detail
-adjacency, and tactical roster design.
-
-**How to test:** Build participant-card internals with dense state and compare
-narrow-card, medium-card, and wide-row treatments using realistic content.
-
 ## Room prompts and skill checks want wider collapsible rows
 
 **Hypothesis:** Room/action prompts and scene skill checks should use
@@ -217,3 +201,33 @@ and the layout shell.
 **How to test:** First define the stable frame. Then test whether the remaining
 low-overhead surfaces group naturally into tabs without hiding information that
 needs periodic scanning.
+
+## Group colors belong to runtime state
+
+**Hypothesis:** The colors used by the adjacent group popup and membership dots are session-level display assignments rather than canonical participant-setup data.
+
+**Why it seems plausible:** The adjacent popup established color as useful Running Mode presentation, but not who owns or assigns it. Colors distinguish the groups active in one session; they do not describe a group's canonical identity or behavior, and different active group sets may need different palettes.
+
+**Would affect:** Runtime group participants, encounter initiation, group color selection, roster marks, and the group popup.
+
+**How to test:** Prototype automatic runtime color assignment plus a small encounter-initiation override. Check whether colors need to persist across sessions before changing domain models.
+
+## Inline participant and group A/Ms may be unnecessary
+
+**Hypothesis:** Once the shared A/M surface exists, participant cards may not need inline motivations and the adjacent group popup may not need full group A/Ms.
+
+**Why it seems plausible:** Repeating common aspects and inherited group A/Ms made similar creature cards tall and noisy. Rare individual motivations were more useful inline, but their value has not been compared with a shared A/M surface. The group popup needs names and colors as a membership legend, but its A/M body may duplicate the shared surface.
+
+**Would affect:** Participant-card height, group-popup content, shared A/M structure, and interaction cost when deciding participant behavior.
+
+**How to test:** Prototype the shared A/M surface with the roster visible. Compare three states: no inline A/Ms, participant motivations only, and participant motivations plus group A/Ms in the adjacent popup.
+
+## Participant charges may work as a roster lens
+
+**Hypothesis:** Charges such as focus points, spell slots, consumables, and ability uses can appear through a resource lens instead of permanently enlarging tactical participant cards.
+
+**Why it seems plausible:** These resources are important only for participants that have them and only at certain moments. Permanent controls would tax every card, while a lens could reveal comparable resource state across the initiative roster.
+
+**Would affect:** Participant resource modeling, tactical roster internals, resource editing, and lens composition.
+
+**How to test:** First shape a concrete `ParticipantResource` model with several real examples. Then prototype a resource lens across a mixed roster and compare it with inline counters on only the affected cards.

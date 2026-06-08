@@ -47,6 +47,17 @@ The domain model can be rich — creatures have concepts, participants have
 motivations, encounters have conflict sources — but that richness exists to make
 notes more findable and more useful, not to simulate a game.
 
+### Minimum interaction, maximum information
+
+Prefer interactions that reveal a useful set of related information at once. If
+the GM asks to see groups, show the available groups and what they carry rather
+than requiring a separate interaction for every group.
+
+This is not a mandate to display everything simultaneously. The revealed
+surface should remain scoped to the GM's current intention, preserve orientation
+where practical, and avoid turning a focused interaction into an unrelated
+full-layout switch.
+
 ### Structured enough to be useful, loose enough to be fast
 
 The app should capture prep in structured form where structure helps retrieval

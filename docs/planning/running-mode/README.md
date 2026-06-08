@@ -2,6 +2,8 @@
 
 Start here when returning to Running Mode work.
 
+**Current implementation iteration:** 4
+
 ## Workflow
 
 1. If there are uncommitted changes, find the last relevant agent session and recall what was done before proceeding. Refresh the big picture below to stay on track.
@@ -13,13 +15,22 @@ Start here when returning to Running Mode work.
    - Does anything belong in the R2 framing, or has the work produced a durable finding instead?
    - How should the previous step be described so that it helps move the project forward? If there is nothing especially valuable to preserve, add a short description of the completed task.
 
+### A note for AI agents
+
+If you're an agent reading this file, note that step 3 can be treated as done only after feedback from the developer. Don't rush to change documentation until the feedback is settled.
+
 ## Best Next Move
+
+### A side task
+
+Roster prototyping revealed some weaknesses in design for models around roster. I'd like to address them before moving on to the next component to prototype. [See details here](./tasks/running-mode-roster-model-integration.md).
+
+### Once the side task is done
 
 Prototype the internals of one core Running Mode content surface. Do not spend time deciding the perfect master-task and subtask structure first; begin with one component, then introduce a master task or split tasks only if the work makes that useful.
 
-Good starting candidates:
+Good next candidates:
 
-- participant / roster card;
 - room and action prompts;
 - trigger / interrupt watchlist item;
 - conflict source row;
@@ -31,9 +42,13 @@ Running Mode Layout R1 is complete. Its FPO-only prototypes were useful for expl
 
 The component studies should feed [Running Mode Layout R2 framing](./r2-framing.md). R2 will use a smaller known set of layout directions, preserve a couple of slots for ideas discovered during component work, and test the strongest directions with better structural evidence.
 
+`R[n]` means round number `n` of prototyping for one named surface, not a project-wide iteration. Layout R1 generated component-internal studies that feed Layout R2; those side studies do not use round notation unless that particular component later needs another explicit prototyping round.
+
+Component-study notes live beside their Storybook artifacts. The participant and roster note is at [`libs/ui/src/4/running-mode-roster/README.md`](../../../libs/ui/src/4/running-mode-roster/README.md).
+
 ## Previous Step
 
-Created and refined the Running Mode design memory system after R1: durable findings, testable hypotheses, open-question task seeds, shared vocabulary, and explicit R1/R2 framing. The latest refinement separated permanent product knowledge from iteration-specific plans and clarified that lenses preserve and reinterpret the existing layout rather than acting as generic drawers.
+Completed Participant and Roster Internals. The study established an approximately `320px` compact roster, an adjacent group popup with compact group-color marks, informal exploration relevance grouping, and an initiative-ordered tactical roster interleaving PCs and creatures. Inline participant and group A/M placement remains a hypothesis for the shared A/M study.
 
 ## Design Memory
 

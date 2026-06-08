@@ -4,6 +4,10 @@ R2 is the next full-screen layout iteration after the FPO-only R1 prototypes. Do
 
 This document holds iteration-specific constraints and candidate directions. Durable conclusions belong in [findings](./findings.md); untested general directions belong in [hypotheses](./hypotheses.md).
 
+## Component Evidence
+
+- [Participant and roster prototype](../../../libs/ui/src/4/running-mode-roster/README.md) establishes the tested content, states, and fixtures behind the roster constraints.
+
 ## Constraints Carried From R1
 
 - Do not add live setting/location/adventure breadcrumbs.

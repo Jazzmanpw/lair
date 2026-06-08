@@ -1,0 +1,628 @@
+import {
+  BookOpenText,
+  ChevronDown,
+  ChevronRight,
+  Flag,
+  RotateCcw,
+  Users,
+  X,
+} from 'lucide-react';
+import {type KeyboardEvent, type ReactNode, useMemo, useState} from 'react';
+
+export type RosterMode = 'exploration' | 'tactics';
+export type RosterSection = 'in-conflict' | 'non-conflicting' | 'out-of-game';
+
+export type RosterGroup = {
+  id: string;
+  name: string;
+  color: string;
+  aspects: string[];
+  motivations: string[];
+  section: RosterSection;
+};
+
+export type RosterCreature = {
+  kind: 'creature';
+  id: string;
+  name: string;
+  groupIds: string[];
+  motivations: string[];
+  section: RosterSection;
+  initiativePosition: number | null;
+  state: {
+    currentHp: number;
+    maxHp: number;
+    reactionAvailable: boolean;
+    conditions: string[];
+  };
+};
+
+export type RosterCombatant = {
+  kind: 'player-character';
+  id: string;
+  name: string;
+  initiativePosition: number;
+};
+
+export type RosterPrototypeProps = {
+  creatures: RosterCreature[];
+  groups: RosterGroup[];
+  playerCharacters: RosterCombatant[];
+  mode: RosterMode;
+  groupPopupOpen?: boolean;
+};
+
+function IconButton({
+  label,
+  active = false,
+  children,
+  onClick,
+}: {
+  label: string;
+  active?: boolean;
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      title={label}
+      aria-label={label}
+      aria-pressed={active}
+      onClick={onClick}
+      className={`grid size-6 shrink-0 place-items-center rounded border text-[10px] font-bold transition-colors ${
+        active
+          ? 'border-[#78b482] bg-[#263d2a] text-[#91d49b]'
+          : 'border-[#384236] bg-[#171d16] text-[#929d8c] hover:border-[#7c8a76] hover:text-[#e7e5dc]'
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function GroupMarks({
+  groupIds,
+  groupsById,
+}: {
+  groupIds: string[];
+  groupsById: Map<string, RosterGroup>;
+}) {
+  return (
+    <span className="flex shrink-0 items-center gap-[3px]">
+      {groupIds.map((groupId) => {
+        const group = groupsById.get(groupId);
+        if (!group) return null;
+        return (
+          <span
+            key={group.id}
+            title={group.name}
+            aria-label={group.name}
+            className="size-2.5 rounded-full border border-black/25"
+            style={{backgroundColor: group.color}}
+          />
+        );
+      })}
+    </span>
+  );
+}
+
+function MotivationList({motivations}: {motivations: string[]}) {
+  if (!motivations.length) return null;
+  return (
+    <div className="mt-1 flex flex-col gap-0.5">
+      {motivations.map((motivation) => (
+        <div
+          key={motivation}
+          className="flex gap-1 text-[10px] leading-[1.3] text-[#d7c89e]"
+        >
+          <ChevronRight className="mt-px size-3 shrink-0 text-[#bd9450]" />
+          <span>{motivation}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GroupPopup({
+  groups,
+  onClose,
+}: {
+  groups: RosterGroup[];
+  onClose: () => void;
+}) {
+  return (
+    <section
+      aria-label="Group popup"
+      className="rounded-md border border-[#59503b] bg-[#1c2119] p-2 shadow-[0_10px_35px_rgba(0,0,0,0.4)] absolute top-0 w-70 -right-72"
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <Users className="size-3.5 text-[#b99a61]" />
+        <h2 className="flex-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#c9b687]">
+          Groups
+        </h2>
+        <button
+          type="button"
+          aria-label="Close group popup"
+          onClick={onClose}
+          className="text-[#7f897a] hover:text-[#e9e6dc]"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {groups.map((group) => (
+          <article
+            key={group.id}
+            className="rounded border border-[#353c30] bg-[#171c15] p-2"
+          >
+            <header className="flex items-center gap-1.5">
+              <span
+                className="size-2.5 shrink-0 rounded-full border border-black/25"
+                style={{backgroundColor: group.color}}
+              />
+              <h3 className="text-[11px] font-bold leading-4 text-[#e7e3d6]">
+                {group.name}
+              </h3>
+            </header>
+            {(group.aspects.length > 0 || group.motivations.length > 0) && (
+              <div className="mt-1.5 flex flex-col gap-1 pl-4">
+                {group.aspects.map((aspect) => (
+                  <div
+                    key={aspect}
+                    className="text-[10px] leading-[1.35] text-[#aeb7a7]"
+                  >
+                    {aspect}
+                  </div>
+                ))}
+                <MotivationList motivations={group.motivations} />
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TurnButton({
+  name,
+  active,
+  onClick,
+}: {
+  name: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <IconButton
+      label={`Make ${name} the actor`}
+      active={active}
+      onClick={onClick}
+    >
+      <Flag className="size-3.5" fill={active ? 'currentColor' : 'none'} />
+    </IconButton>
+  );
+}
+
+function PlayerCharacterRow({
+  participant,
+  active,
+  onSetActor,
+}: {
+  participant: RosterCombatant;
+  active: boolean;
+  onSetActor: () => void;
+}) {
+  return (
+    <div
+      className={`flex min-h-8 items-center gap-2 rounded border px-2 ${
+        active
+          ? 'border-[#587e5e] bg-[#1d2b20]'
+          : 'border-[#2e372c] bg-[#191f18]'
+      }`}
+    >
+      <span className="min-w-0 flex-1 truncate text-[12px] font-bold text-[#dbded5]">
+        {participant.name}
+      </span>
+      <TurnButton
+        name={participant.name}
+        active={active}
+        onClick={onSetActor}
+      />
+    </div>
+  );
+}
+
+function CreatureCard({
+  creature,
+  groupsById,
+  mode,
+  active,
+  deactivated = false,
+  onSetActor,
+  onOpenStatblock,
+  onUpdate,
+}: {
+  creature: RosterCreature;
+  groupsById: Map<string, RosterGroup>;
+  mode: RosterMode;
+  active: boolean;
+  deactivated?: boolean;
+  onSetActor: () => void;
+  onOpenStatblock: () => void;
+  onUpdate: (creature: RosterCreature) => void;
+}) {
+  const [hpDraft, setHpDraft] = useState('');
+  const [addingCondition, setAddingCondition] = useState(false);
+  const [conditionDraft, setConditionDraft] = useState('');
+  const hpRatio = creature.state.currentHp / creature.state.maxHp;
+
+  function commitHp() {
+    const delta = Number.parseInt(hpDraft, 10);
+    if (Number.isFinite(delta) && delta !== 0) {
+      onUpdate({
+        ...creature,
+        state: {
+          ...creature.state,
+          currentHp: Math.max(
+            0,
+            Math.min(creature.state.maxHp, creature.state.currentHp + delta),
+          ),
+        },
+      });
+    }
+    setHpDraft('');
+  }
+
+  function commitCondition() {
+    if (conditionDraft.trim()) {
+      onUpdate({
+        ...creature,
+        state: {
+          ...creature.state,
+          conditions: [...creature.state.conditions, conditionDraft.trim()],
+        },
+      });
+    }
+    setConditionDraft('');
+    setAddingCondition(false);
+  }
+
+  return (
+    <article
+      className={`rounded border bg-[#1b2119] px-2 py-1.5 ${
+        active && mode === 'tactics' ? 'border-[#5f8d66]' : 'border-[#30392e]'
+      } ${deactivated ? 'bg-[#161a15] opacity-55' : ''}`}
+    >
+      <div className="flex items-center gap-1.5">
+        <h3
+          className={`min-w-0 flex-1 text-[12px] font-bold leading-4 ${
+            deactivated ? 'text-[#858d81]' : 'text-[#edede5]'
+          }`}
+        >
+          {creature.name}
+        </h3>
+        <GroupMarks groupIds={creature.groupIds} groupsById={groupsById} />
+        <IconButton
+          label={`Open ${creature.name} statblock`}
+          onClick={onOpenStatblock}
+        >
+          <BookOpenText className="size-3.5" />
+        </IconButton>
+        {mode === 'tactics' && (
+          <TurnButton
+            name={creature.name}
+            active={active}
+            onClick={onSetActor}
+          />
+        )}
+      </div>
+
+      {mode === 'tactics' && (
+        <>
+          <div className="mt-1 flex items-center gap-1.5">
+            <span
+              className={`text-[12px] font-bold tabular-nums ${
+                hpRatio > 0.5
+                  ? 'text-[#78b87d]'
+                  : hpRatio > 0.25
+                    ? 'text-[#d0a457]'
+                    : 'text-[#c86b68]'
+              }`}
+            >
+              {creature.state.currentHp}/{creature.state.maxHp}
+            </span>
+            <input
+              value={hpDraft}
+              inputMode="numeric"
+              aria-label={`Adjust ${creature.name} HP`}
+              placeholder="+/−"
+              onChange={(event) => setHpDraft(event.target.value)}
+              onBlur={commitHp}
+              onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+                if (event.key === 'Enter') commitHp();
+                if (event.key === 'Escape') setHpDraft('');
+              }}
+              className="h-6 w-11 rounded border border-[#384236] bg-[#12170f] px-1 text-center text-[11px] font-bold text-[#e8e4d8] outline-none placeholder:text-[#4d584a] focus:border-[#6e9873]"
+            />
+            <span className="flex-1" />
+            <IconButton
+              label={`Add condition to ${creature.name}`}
+              active={addingCondition}
+              onClick={() => setAddingCondition((current) => !current)}
+            >
+              C
+            </IconButton>
+            <IconButton
+              label={`${creature.state.reactionAvailable ? 'Spend' : 'Restore'} ${creature.name} reaction`}
+              active={creature.state.reactionAvailable}
+              onClick={() =>
+                onUpdate({
+                  ...creature,
+                  state: {
+                    ...creature.state,
+                    reactionAvailable: !creature.state.reactionAvailable,
+                  },
+                })
+              }
+            >
+              <RotateCcw className="size-3.5" />
+            </IconButton>
+          </div>
+          {(creature.state.conditions.length > 0 || addingCondition) && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {creature.state.conditions.map((condition) => (
+                <button
+                  type="button"
+                  key={condition}
+                  title="Remove condition"
+                  onClick={() =>
+                    onUpdate({
+                      ...creature,
+                      state: {
+                        ...creature.state,
+                        conditions: creature.state.conditions.filter(
+                          (item) => item !== condition,
+                        ),
+                      },
+                    })
+                  }
+                  className="rounded border border-[#68483c] bg-[#34251f] px-1.5 py-0.5 text-[9px] text-[#d9a080]"
+                >
+                  {condition} ×
+                </button>
+              ))}
+              {addingCondition && (
+                <input
+                  autoFocus
+                  value={conditionDraft}
+                  aria-label={`New condition for ${creature.name}`}
+                  onChange={(event) => setConditionDraft(event.target.value)}
+                  onBlur={commitCondition}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') commitCondition();
+                    if (event.key === 'Escape') setAddingCondition(false);
+                  }}
+                  className="h-5 min-w-20 flex-1 rounded border border-[#735b39] bg-[#12170f] px-1 text-[9px] text-[#d8ddd3] outline-none"
+                />
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      <MotivationList motivations={creature.motivations} />
+    </article>
+  );
+}
+
+function RoundControl({
+  round,
+  onChange,
+}: {
+  round: number;
+  onChange: (round: number) => void;
+}) {
+  return (
+    <div className="mb-2 flex items-center justify-end gap-1 text-[10px] text-[#8d9788]">
+      <span className="mr-1 uppercase tracking-[0.12em]">Round</span>
+      <button
+        type="button"
+        aria-label="Previous round"
+        onClick={() => onChange(Math.max(1, round - 1))}
+        className="grid size-5 place-items-center rounded border border-[#384236]"
+      >
+        −
+      </button>
+      <span className="min-w-5 text-center font-bold tabular-nums text-[#d8ddd4]">
+        {round}
+      </span>
+      <button
+        type="button"
+        aria-label="Next round"
+        onClick={() => onChange(round + 1)}
+        className="grid size-5 place-items-center rounded border border-[#384236]"
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+export default function RosterPrototype({
+  creatures: initialCreatures,
+  groups,
+  playerCharacters,
+  mode,
+  groupPopupOpen: initialGroupPopupOpen = false,
+}: RosterPrototypeProps) {
+  const [creatures, setCreatures] = useState(initialCreatures);
+  const [actorId, setActorId] = useState(
+    playerCharacters[0]?.id ?? initialCreatures[0]?.id,
+  );
+  const [round, setRound] = useState(3);
+  const [groupPopupOpen, setGroupPopupOpen] = useState(initialGroupPopupOpen);
+  const [outOfGameOpen, setOutOfGameOpen] = useState(false);
+  const [statblockId, setStatblockId] = useState<string | null>(null);
+  const groupsById = useMemo(
+    () => new Map(groups.map((group) => [group.id, group])),
+    [groups],
+  );
+  const initiative = [...playerCharacters, ...creatures]
+    .filter(
+      (
+        participant,
+      ): participant is
+        | RosterCombatant
+        | (RosterCreature & {
+            initiativePosition: number;
+          }) => participant.initiativePosition !== null,
+    )
+    .sort((a, b) => a.initiativePosition - b.initiativePosition);
+
+  function updateCreature(nextCreature: RosterCreature) {
+    setCreatures((current) =>
+      current.map((creature) =>
+        creature.id === nextCreature.id ? nextCreature : creature,
+      ),
+    );
+  }
+
+  function explorationRows() {
+    const primary = creatures.filter(
+      (creature) =>
+        creature.section ===
+        (creatures.some((item) => item.section === 'in-conflict')
+          ? 'in-conflict'
+          : 'non-conflicting'),
+    );
+    const secondary = creatures.filter(
+      (creature) =>
+        creature.section === 'non-conflicting' && !primary.includes(creature),
+    );
+    const outOfGame = creatures.filter(
+      (creature) => creature.section === 'out-of-game',
+    );
+
+    return (
+      <>
+        <div className="flex flex-col gap-1">
+          {primary.map((creature) => renderCreature(creature))}
+        </div>
+        {secondary.length > 0 && (
+          <section className="mt-2">
+            <div className="mb-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#747e70]">
+              Non-conflicting
+            </div>
+            <div className="flex flex-col gap-1">
+              {secondary.map((creature) => renderCreature(creature))}
+            </div>
+          </section>
+        )}
+        {outOfGame.length > 0 && (
+          <section className="mt-2">
+            <button
+              type="button"
+              aria-expanded={outOfGameOpen}
+              onClick={() => setOutOfGameOpen((current) => !current)}
+              className="flex w-full items-center gap-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#697267]"
+            >
+              {outOfGameOpen ? (
+                <ChevronDown className="size-3" />
+              ) : (
+                <ChevronRight className="size-3" />
+              )}
+              Out of game
+            </button>
+            {outOfGameOpen && (
+              <div className="mt-1 flex flex-col gap-1">
+                {outOfGame.map((creature) => renderCreature(creature, true))}
+              </div>
+            )}
+          </section>
+        )}
+      </>
+    );
+  }
+
+  function renderCreature(creature: RosterCreature, deactivated = false) {
+    return (
+      <CreatureCard
+        key={creature.id}
+        creature={creature}
+        groupsById={groupsById}
+        mode={mode}
+        active={creature.id === actorId}
+        deactivated={deactivated}
+        onSetActor={() => setActorId(creature.id)}
+        onOpenStatblock={() => setStatblockId(creature.id)}
+        onUpdate={updateCreature}
+      />
+    );
+  }
+
+  const roster = (
+    <div className="min-w-0">
+      {mode === 'tactics' ? (
+        <>
+          <RoundControl round={round} onChange={setRound} />
+          <div className="flex flex-col gap-1">
+            {initiative.map((participant) =>
+              participant.kind === 'player-character' ? (
+                <PlayerCharacterRow
+                  key={participant.id}
+                  participant={participant}
+                  active={participant.id === actorId}
+                  onSetActor={() => setActorId(participant.id)}
+                />
+              ) : (
+                renderCreature(participant)
+              ),
+            )}
+          </div>
+        </>
+      ) : (
+        explorationRows()
+      )}
+    </div>
+  );
+
+  return (
+    <div className="font-(--lair-font) text-[#d8dbd2]">
+      <div className="mb-2 flex items-center justify-end gap-1">
+        <IconButton
+          label="Toggle group popup"
+          active={groupPopupOpen}
+          onClick={() => setGroupPopupOpen((current) => !current)}
+        >
+          <Users className="size-3.5" />
+        </IconButton>
+      </div>
+      <div className="rounded-lg border border-[#323b2f] bg-[#11160f] p-2 shadow-[0_16px_50px_rgba(0,0,0,0.45)] relative">
+        {roster}
+        {groupPopupOpen && (
+          <GroupPopup
+            groups={groups}
+            onClose={() => setGroupPopupOpen(false)}
+          />
+        )}
+      </div>
+      {statblockId && (
+        <div className="mt-2 flex items-start gap-2 rounded border border-[#465744] bg-[#1c241a] p-2 text-[10px] text-[#939d8e]">
+          <BookOpenText className="mt-0.5 size-3.5 shrink-0" />
+          <span className="flex-1">
+            Full statblock opened without changing the actor.
+          </span>
+          <button
+            type="button"
+            aria-label="Close statblock notice"
+            onClick={() => setStatblockId(null)}
+          >
+            <X className="size-3.5" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

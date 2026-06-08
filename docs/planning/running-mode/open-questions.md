@@ -17,22 +17,18 @@ Each entry should use this shape:
 **Explore:** Possible angles, examples, or prototype directions.
 ```
 
-## What exactly goes inside a participant card?
+## What remains unresolved in participant cards?
 
-**Question:** What is the minimum useful participant card shape for Running Mode,
-and what can expand or move to detail surfaces?
+**Question:** How should participant cards handle exceptional content after their core grammar has been established?
 
-**Why it matters:** Participant roster placement and width cannot be decided
-well until the internal card grammar is clearer.
+**Why it matters:** The roster study resolved the normal exploration and tactical card shape, but uncommon data may still break its density or require another lens.
 
 **Explore:**
 
-- Name/type identity.
-- HP, conditions, reaction availability, and other runtime state.
-- Group membership.
-- Encounter relevance.
-- A/M hints or motivation snippets.
-- Row/card actions and expand behavior.
+- Charges and other participant resources.
+- Exceptionally long names or individual motivations at the `240px` fallback width.
+- Where add-participant and other roster-level actions live outside the roster.
+- Whether condition controls keep the `C` label or adopt an icon once the wider control language exists.
 
 ## What exactly is a room/action prompt?
 
