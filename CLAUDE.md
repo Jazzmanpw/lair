@@ -25,9 +25,10 @@ Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; 
 - When `nx` says "the workspace is out of sync", running `nx sync` both reports AND applies the sync. No need to run it a second time.
 - Before committing, run `nx format` to fix prettier formatting across the workspace
 
-### Codex Note
+## Running Mode
 
-- In Codex sandbox sessions, run Nx with `TMPDIR=/tmp TMP=/tmp TEMP=/tmp NX_DAEMON=false NX_ISOLATE_PLUGINS=false`
-- `tools/package.json` points `@lair/tools/plugin` at `tools/src/plugin-shim.cjs`, a tiny CommonJS shim that loads `tools/src/plugin.ts` through `jiti`
-- The shim avoids the local-plugin SWC/ESM issues on both local machines and in Codex; the extra temp and isolation env vars are still needed because Nx plugins and `tsx` otherwise try to use sandbox-incompatible temp/process behavior
-- On native Windows, UI browser tests automatically use the installed Chrome channel when `CODEX_SHELL=1`; the Windows sandbox blocks Playwright's downloaded Chromium executable under `%LOCALAPPDATA%\ms-playwright`
+For work under `docs/planning/running-mode/`, read and follow `docs/planning/running-mode/AGENTS.md` before proceeding.
+
+## Troubleshooting
+
+- If tests fail because Playwright has a wrong version, check the version installed in `O:\omni\omni` (it's the only other project using Playwright) and update the version of the package in this repo to match. Then, run `npx playwright install`, and tests should run

@@ -15,10 +15,6 @@ Start here when returning to Running Mode work.
    - Does anything belong in the R2 framing, or has the work produced a durable finding instead?
    - How should the previous step be described so that it helps move the project forward? If there is nothing especially valuable to preserve, add a short description of the completed task.
 
-### A note for AI agents
-
-If you're an agent reading this file, note that step 3 can be treated as done only after feedback from the developer. Don't rush to change documentation until the feedback is settled.
-
 ## Best Next Move
 
 ### A side task
