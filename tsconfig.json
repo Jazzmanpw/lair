@@ -10,6 +10,12 @@
     },
     {
       "path": "./libs/ui"
+    },
+    {
+      "path": "./libs/domain-archive"
+    },
+    {
+      "path": "./libs/ui-archive"
     }
   ]
 }

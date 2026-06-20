@@ -1,4 +1,4 @@
-import type {Participant} from '../manual/running';
+import type {Participant} from '../running';
 
 export const sessionDog: Participant<'creature'> = {
   id: 'session-dog-1',

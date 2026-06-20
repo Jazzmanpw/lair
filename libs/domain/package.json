@@ -4,16 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./scene": "./src/scene.ts",
-    "./creature": "./src/creature.ts",
-    "./fixtures-legacy/scenes": "./src/fixtures-legacy/scenes.ts",
-    "./fixtures-legacy/creatures": "./src/fixtures-legacy/creatures.ts",
+    "./prep": "./src/prep.ts",
+    "./pf2e": "./src/pf2e.ts",
+    "./running": "./src/running.ts",
     "./fixtures/statblocks": "./src/fixtures/statblocks.ts",
     "./fixtures/setups": "./src/fixtures/setups.ts",
-    "./fixtures/participants": "./src/fixtures/participants.ts",
-    "./run-state": "./src/run-state.ts",
-    "./manual/prep": "./src/manual/prep.ts",
-    "./manual/pf2e": "./src/manual/pf2e.ts",
-    "./manual/running": "./src/manual/running.ts"
+    "./fixtures/participants": "./src/fixtures/participants.ts"
   }
 }

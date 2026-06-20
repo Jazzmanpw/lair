@@ -1,0 +1,13 @@
+{
+  "name": "@lair/domain-archive",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./legacy-scene": "./src/legacy-scene.ts",
+    "./legacy-creature": "./src/legacy-creature.ts",
+    "./legacy-run-state": "./src/legacy-run-state.ts",
+    "./legacy-fixtures/scenes": "./src/legacy-fixtures/scenes.ts",
+    "./legacy-fixtures/creatures": "./src/legacy-fixtures/creatures.ts"
+  }
+}

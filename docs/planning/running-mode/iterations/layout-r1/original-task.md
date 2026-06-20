@@ -380,7 +380,7 @@ Known gaps for the next implementation task:
 ### Deliverable
 
 Produce **5 distinct layout prototypes** as separate Storybook components in
-`libs/ui/src/4/running-mode-layout-r1/`. Each prototype should use a fundamentally
+`libs/ui-archive/src/4/running-mode-layout-r1/`. Each prototype should use a fundamentally
 different spatial strategy for arranging the same content zones.
 
 Name them `layout-a.tsx` through `layout-e.tsx`, each with a corresponding
@@ -403,7 +403,7 @@ first?"
 
 ### Using FPO Blocks
 
-Import `Fpo` from `../fpo.tsx` (copied from v3 into `libs/ui/src/4/fpo.tsx`). Every content zone is an FPO block with a
+Import `Fpo` from `../fpo.tsx` (copied from v3 into `libs/ui-archive/src/4/fpo.tsx`). Every content zone is an FPO block with a
 descriptive label. No real data rendering in this round — only spatial
 structure.
 

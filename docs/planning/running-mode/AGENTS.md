@@ -9,5 +9,8 @@ When working on Running Mode:
 5. After each edit round, stop and discuss the result before changing implementation again. Treat questions and comments as discussion prompts: reach agreement, make the next agreed edit round, then return to discussion.
 6. The developer decides when the task and feedback cycle are complete. Until then, do not mark tasks complete or promote provisional conclusions into findings, hypotheses, framing, or other durable planning artifacts. Editing docs, including running mode `README.md`, should happen only after explicit request from dev.
    - Writing down side task docs immediately is fine. Make sure you include all the relevant context, so that it can be taken into work in a fresh thread.
+7. Do not rush to archive UI work. Archiving usually happens after an explicit developer request. Both unpolished prototypes and completed current-direction work stay in `@lair/ui` as a base for future work.
+   - Move UI work to archive only when the whole implementation iteration wraps up, or when a smaller prototype did not work out or was superseded but remains useful as future reference.
+   - Everything else either remains active or is deleted.
 
 The workflow text in `docs/planning/running-mode/README.md` is primarily the developer's personal project reminder. Interpret “you” there as the developer unless the text explicitly addresses agents.

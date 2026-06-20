@@ -1,4 +1,4 @@
-import type {EncounterSetup, ParticipantSetup} from '../manual/prep';
+import type {EncounterSetup, ParticipantSetup} from '../prep';
 
 export const dogSetup: ParticipantSetup<'creature'> = {
   id: 'setup-okamenevshaya-sobaka',

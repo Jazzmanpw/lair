@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../dist/types/ui-archive/tsconfig.lib.tsbuildinfo",
+    "outDir": "../../dist/types/ui-archive",
+    "rootDir": ".",
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src", ".storybook/preview.tsx"],
+  "references": [
+    {
+      "path": "../domain-archive/tsconfig.lib.json"
+    }
+  ]
+}

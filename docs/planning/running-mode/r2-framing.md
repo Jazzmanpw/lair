@@ -6,7 +6,7 @@ This document holds iteration-specific constraints and candidate directions. Dur
 
 ## Component Evidence
 
-- [Participant and roster prototype](../../../libs/ui/src/4/running-mode-roster/README.md) establishes the tested content, states, and fixtures behind the roster constraints.
+- [Participant and roster prototype](../../../libs/ui/src/running-mode/roster/README.md) establishes the tested content, states, and fixtures behind the roster constraints.
 
 ## Constraints Carried From R1
 

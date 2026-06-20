@@ -2,6 +2,10 @@
 
 Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; planning notes live under `docs/planning/`. The referenced vault lives in `E:\Persisted\НРИ` and Codex access is configured in `.claude/settings.json`.
 
+## Prototype Changeability
+
+This is a solo pet project, not a public API surface. Prefer clear current structure over backward compatibility for internal code, docs, exports, names, and file layout. When older shapes make the project harder to navigate or change, move or rename them directly instead of preserving aliases, wrappers, or compatibility paths by default. Keep historical work only when it remains useful as archive evidence.
+
 ## External references
 
 - **TTRPG vault**: `E:\Persisted\НРИ` — source content for scenes, creatures, adventures

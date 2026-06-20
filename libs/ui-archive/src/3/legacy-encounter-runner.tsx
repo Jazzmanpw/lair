@@ -1,0 +1,122 @@
+import {useEffect, useReducer, useRef, useState} from 'react';
+import type {CreatureStatblock as StatblockType} from '@lair/domain-archive/legacy-creature';
+import {
+  initializeRunState,
+  runStateReducer,
+} from '@lair/domain-archive/legacy-run-state';
+import type {Encounter} from '@lair/domain-archive/legacy-scene';
+import CreatureCombatCard from './creature-combat-card.tsx';
+import Fpo from './fpo.tsx';
+
+export type EncounterRunnerProps = {
+  encounter: Encounter;
+  statblocks?: Record<string, StatblockType>;
+  onEnd?: () => void;
+};
+
+export default function LegacyEncounterRunner({
+  encounter,
+  statblocks = {},
+  onEnd,
+}: EncounterRunnerProps) {
+  const [runState, dispatch] = useReducer(
+    runStateReducer,
+    {encounter, statblocks},
+    ({encounter, statblocks}) => initializeRunState(encounter, statblocks),
+  );
+
+  const [showConflicts, setShowConflicts] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showConflicts) return;
+    function handleClick(e: MouseEvent) {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(e.target as Node)
+      ) {
+        setShowConflicts(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShowConflicts(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [showConflicts]);
+
+  return (
+    <div className="flex flex-col h-full bg-[#12170f] text-(--lair-text) font-(--lair-font) overflow-hidden">
+      <div className="flex items-center gap-4 px-5 py-2.5 bg-[#172015] border-b border-[#2c3428] shrink-0">
+        <span className="px-2.5 py-[3px] rounded-[3px] text-[10px] font-bold tracking-[0.08em] uppercase bg-[#2d2218] text-[#b8944a] border border-[#8b6c3e]">
+          {encounter.threatLevel}
+        </span>
+        <div className="flex-1 min-w-0 relative">
+          <button
+            type="button"
+            onClick={() => setShowConflicts(!showConflicts)}
+            className="bg-transparent border-none p-0 cursor-pointer text-left w-full font-(--lair-font)"
+          >
+            <span className="text-sm font-bold text-[#e8e4d8] tracking-[0.02em]">
+              {encounter.dramaticQuestion}
+            </span>
+          </button>
+          {showConflicts && (
+            <div
+              ref={popoverRef}
+              className="absolute top-full left-0 mt-2 z-50 w-[360px] bg-[#1d231a] border border-[#384236] rounded p-4 shadow-lg shadow-black/40"
+            >
+              <div className="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#8b6c3e] mb-2">
+                Источники конфликта
+              </div>
+              <ul className="m-0 pl-4 text-[13px] leading-relaxed text-(--lair-text-dim) list-disc">
+                {encounter.conflictSources.map((src) => (
+                  <li key={src} className="mb-1">
+                    {src}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+        <span className="text-[11px] font-bold tracking-[0.06em] uppercase text-(--lair-text-dim) shrink-0">
+          Round {runState.flow.round}
+        </span>
+        <button
+          type="button"
+          onClick={onEnd}
+          className="px-3 py-1 rounded-[3px] text-[10px] font-bold tracking-[0.06em] uppercase bg-transparent border border-[#8b6c3e] text-(--lair-text-dim) cursor-pointer font-(--lair-font) hover:border-[#b8944a] hover:text-[#b8944a] transition-colors duration-150 shrink-0"
+        >
+          End
+        </button>
+      </div>
+
+      <div className="flex-1 grid grid-cols-[260px_1fr] overflow-hidden">
+        <div className="border-r border-[#2c3428] overflow-auto p-3 flex flex-col gap-2">
+          {runState.participants.map((p) => (
+            <CreatureCombatCard
+              key={p.id}
+              participant={p}
+              state={runState.creatureStates[p.id]}
+              statblock={p.statblockId ? statblocks[p.statblockId] : undefined}
+              isActive={p.id === runState.flow.activeParticipantId}
+              onAction={dispatch}
+            />
+          ))}
+        </div>
+
+        <div className="overflow-auto p-4 px-5">
+          <div className="grid grid-cols-[2fr_1fr] gap-3 mb-3">
+            <Fpo className="min-h-[200px]">Actor</Fpo>
+            <Fpo className="min-h-[200px]">Interrupts</Fpo>
+          </div>
+          <Fpo className="min-h-[120px]">Targets</Fpo>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,4 +1,4 @@
-import type {CreatureStatblock} from '../manual/pf2e';
+import type {CreatureStatblock} from '../pf2e';
 
 export const petrifiedDogStatblock: CreatureStatblock = {
   id: 'okamenevshaya-sobaka-tyangu',
