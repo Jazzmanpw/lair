@@ -4,6 +4,7 @@ export const sessionDog: Participant<'creature'> = {
   id: 'session-dog-1',
   name: 'Окаменевшая собака 1',
   setupId: 'setup-okamenevshaya-sobaka',
+  status: 'inGame',
   motivations: [{id: 'mot-guard', value: 'Охраняет вход'}],
   type: 'creature',
   state: {

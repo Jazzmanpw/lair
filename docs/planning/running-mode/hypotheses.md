@@ -231,3 +231,23 @@ needs periodic scanning.
 **Would affect:** Participant resource modeling, tactical roster internals, resource editing, and lens composition.
 
 **How to test:** First shape a concrete `ParticipantResource` model with several real examples. Then prototype a resource lens across a mixed roster and compare it with inline counters on only the affected cards.
+
+## Participant exit reasons belong in notes
+
+**Hypothesis:** Runtime participant status should only track whether a creature is still in the game for the current session. The many possible reasons a creature leaves play should be captured through free-form notes and later wrap-up decisions instead of a fixed status list.
+
+**Why it seems plausible:** Leaving play can mean being killed, fleeing, surrendering, being trapped, becoming irrelevant, or many other table-specific outcomes. The important long-term question is usually whether the event should become canonical campaign data, and that is closer to note taking and session wrap-up than to roster filtering. A binary `inGame` / `outOfGame` flag keeps the roster interaction simple while notes preserve richer meaning.
+
+**Would affect:** Creature participant state, note linking, session wrap-up, roster filtering, and future history/canonical-data promotion.
+
+**How to test:** Use the roster prototype with a small note-taking or wrap-up sketch. Check whether free-form notes recover enough context for dead, fled, and otherwise removed creatures without requiring a structured status taxonomy.
+
+## Tactical inspection and initiative flow share visuals but not state
+
+**Hypothesis:** The roster should support tactical inspection without initiative, using the same participant row visuals as initiative flow but a different state machine for ordering and active actor selection.
+
+**Why it seems plausible:** The GM may want tactical controls, creature state, spells, or statblocks before initiative is rolled or in scenes that never enter initiative. Binding tactical mode to `InitiativeFlow` would make a valid product state feel like missing data rather than a normal inspection mode.
+
+**Would affect:** Roster mode naming, actor selection state, tactical row ordering, initiative setup, and how session state separates persistent initiative flow from local UI focus.
+
+**How to test:** Prototype tactics with `initiative: null`, using session creature order or alphabetical order and nullable local actor selection. Compare it with active initiative flow while reusing the same `RosterItem` visuals.

@@ -8,46 +8,13 @@ import {
   X,
 } from 'lucide-react';
 import {type KeyboardEvent, type ReactNode, useMemo, useState} from 'react';
+import type {InitiativeFlow, Participant} from '@lair/domain/manual/running';
+import {RosterViewModel} from './roster-model.ts';
 
 export type RosterMode = 'exploration' | 'tactics';
-export type RosterSection = 'in-conflict' | 'non-conflicting' | 'out-of-game';
-
-export type RosterGroup = {
-  id: string;
-  name: string;
-  color: string;
-  aspects: string[];
-  motivations: string[];
-  section: RosterSection;
-};
-
-export type RosterCreature = {
-  kind: 'creature';
-  id: string;
-  name: string;
-  groupIds: string[];
-  motivations: string[];
-  section: RosterSection;
-  initiativePosition: number | null;
-  state: {
-    currentHp: number;
-    maxHp: number;
-    reactionAvailable: boolean;
-    conditions: string[];
-  };
-};
-
-export type RosterCombatant = {
-  kind: 'player-character';
-  id: string;
-  name: string;
-  initiativePosition: number;
-};
 
 export type RosterPrototypeProps = {
-  creatures: RosterCreature[];
-  groups: RosterGroup[];
-  playerCharacters: RosterCombatant[];
+  roster: RosterViewModel;
   mode: RosterMode;
   groupPopupOpen?: boolean;
 };
@@ -81,32 +48,6 @@ function IconButton({
   );
 }
 
-function GroupMarks({
-  groupIds,
-  groupsById,
-}: {
-  groupIds: string[];
-  groupsById: Map<string, RosterGroup>;
-}) {
-  return (
-    <span className="flex shrink-0 items-center gap-[3px]">
-      {groupIds.map((groupId) => {
-        const group = groupsById.get(groupId);
-        if (!group) return null;
-        return (
-          <span
-            key={group.id}
-            title={group.name}
-            aria-label={group.name}
-            className="size-2.5 rounded-full border border-black/25"
-            style={{backgroundColor: group.color}}
-          />
-        );
-      })}
-    </span>
-  );
-}
-
 function MotivationList({motivations}: {motivations: string[]}) {
   if (!motivations.length) return null;
   return (
@@ -124,11 +65,46 @@ function MotivationList({motivations}: {motivations: string[]}) {
   );
 }
 
+function GroupMarks({
+  roster,
+  groupIds,
+  groupsById,
+}: {
+  roster: RosterViewModel;
+  groupIds: string[];
+  groupsById: Map<string, Participant<'group'>>;
+}) {
+  return (
+    <span className="flex shrink-0 items-center gap-[3px]">
+      {groupIds.map((groupId) => {
+        const group = groupsById.get(groupId);
+        if (!group) return null;
+        return (
+          <span
+            key={group.id}
+            title={group.name}
+            aria-label={group.name}
+            className="size-2.5 rounded-full border border-black/25"
+            style={{
+              backgroundColor: RosterViewModel.selectGroupColor(
+                roster,
+                group.id,
+              ),
+            }}
+          />
+        );
+      })}
+    </span>
+  );
+}
+
 function GroupPopup({
+  roster,
   groups,
   onClose,
 }: {
-  groups: RosterGroup[];
+  roster: RosterViewModel;
+  groups: Participant<'group'>[];
   onClose: () => void;
 }) {
   return (
@@ -159,23 +135,33 @@ function GroupPopup({
             <header className="flex items-center gap-1.5">
               <span
                 className="size-2.5 shrink-0 rounded-full border border-black/25"
-                style={{backgroundColor: group.color}}
+                style={{
+                  backgroundColor: RosterViewModel.selectGroupColor(
+                    roster,
+                    group.id,
+                  ),
+                }}
               />
               <h3 className="text-[11px] font-bold leading-4 text-[#e7e3d6]">
                 {group.name}
               </h3>
             </header>
-            {(group.aspects.length > 0 || group.motivations.length > 0) && (
+            {(RosterViewModel.selectSetupAspects(roster, group).length > 0 ||
+              group.motivations.length > 0) && (
               <div className="mt-1.5 flex flex-col gap-1 pl-4">
-                {group.aspects.map((aspect) => (
-                  <div
-                    key={aspect}
-                    className="text-[10px] leading-[1.35] text-[#aeb7a7]"
-                  >
-                    {aspect}
-                  </div>
-                ))}
-                <MotivationList motivations={group.motivations} />
+                {RosterViewModel.selectSetupAspects(roster, group).map(
+                  (aspect) => (
+                    <div
+                      key={aspect}
+                      className="text-[10px] leading-[1.35] text-[#aeb7a7]"
+                    >
+                      {aspect}
+                    </div>
+                  ),
+                )}
+                <MotivationList
+                  motivations={group.motivations.map(({value}) => value)}
+                />
               </div>
             )}
           </article>
@@ -205,37 +191,9 @@ function TurnButton({
   );
 }
 
-function PlayerCharacterRow({
-  participant,
-  active,
-  onSetActor,
-}: {
-  participant: RosterCombatant;
-  active: boolean;
-  onSetActor: () => void;
-}) {
-  return (
-    <div
-      className={`flex min-h-8 items-center gap-2 rounded border px-2 ${
-        active
-          ? 'border-[#587e5e] bg-[#1d2b20]'
-          : 'border-[#2e372c] bg-[#191f18]'
-      }`}
-    >
-      <span className="min-w-0 flex-1 truncate text-[12px] font-bold text-[#dbded5]">
-        {participant.name}
-      </span>
-      <TurnButton
-        name={participant.name}
-        active={active}
-        onClick={onSetActor}
-      />
-    </div>
-  );
-}
-
-function CreatureCard({
-  creature,
+function RosterItem({
+  roster,
+  entry,
   groupsById,
   mode,
   active,
@@ -244,30 +202,33 @@ function CreatureCard({
   onOpenStatblock,
   onUpdate,
 }: {
-  creature: RosterCreature;
-  groupsById: Map<string, RosterGroup>;
+  roster: RosterViewModel;
+  entry: InitiativeFlow.Entry;
+  groupsById: Map<string, Participant<'group'>>;
   mode: RosterMode;
   active: boolean;
   deactivated?: boolean;
   onSetActor: () => void;
   onOpenStatblock: () => void;
-  onUpdate: (creature: RosterCreature) => void;
+  onUpdate: (creature: Participant<'creature'>) => void;
 }) {
   const [hpDraft, setHpDraft] = useState('');
   const [addingCondition, setAddingCondition] = useState(false);
   const [conditionDraft, setConditionDraft] = useState('');
-  const hpRatio = creature.state.currentHp / creature.state.maxHp;
+  const hpRatio =
+    entry.type === 'creature' ? entry.state.currentHp / entry.state.maxHp : 1;
 
   function commitHp() {
+    if (entry.type !== 'creature') return;
     const delta = Number.parseInt(hpDraft, 10);
     if (Number.isFinite(delta) && delta !== 0) {
       onUpdate({
-        ...creature,
+        ...entry,
         state: {
-          ...creature.state,
+          ...entry.state,
           currentHp: Math.max(
             0,
-            Math.min(creature.state.maxHp, creature.state.currentHp + delta),
+            Math.min(entry.state.maxHp, entry.state.currentHp + delta),
           ),
         },
       });
@@ -276,17 +237,38 @@ function CreatureCard({
   }
 
   function commitCondition() {
+    if (entry.type !== 'creature') return;
     if (conditionDraft.trim()) {
       onUpdate({
-        ...creature,
+        ...entry,
         state: {
-          ...creature.state,
-          conditions: [...creature.state.conditions, conditionDraft.trim()],
+          ...entry.state,
+          conditions: [
+            ...entry.state.conditions,
+            {ruleId: conditionDraft.trim()},
+          ],
         },
       });
     }
     setConditionDraft('');
     setAddingCondition(false);
+  }
+
+  if (entry.type === 'playerCharacter') {
+    return (
+      <div
+        className={`flex min-h-8 items-center gap-2 rounded border px-2 ${
+          active
+            ? 'border-[#587e5e] bg-[#1d2b20]'
+            : 'border-[#2e372c] bg-[#191f18]'
+        }`}
+      >
+        <span className="min-w-0 flex-1 truncate text-[12px] font-bold text-[#dbded5]">
+          {entry.name}
+        </span>
+        <TurnButton name={entry.name} active={active} onClick={onSetActor} />
+      </div>
+    );
   }
 
   return (
@@ -301,21 +283,21 @@ function CreatureCard({
             deactivated ? 'text-[#858d81]' : 'text-[#edede5]'
           }`}
         >
-          {creature.name}
+          {entry.name}
         </h3>
-        <GroupMarks groupIds={creature.groupIds} groupsById={groupsById} />
+        <GroupMarks
+          roster={roster}
+          groupIds={entry.groupIds}
+          groupsById={groupsById}
+        />
         <IconButton
-          label={`Open ${creature.name} statblock`}
+          label={`Open ${entry.name} statblock`}
           onClick={onOpenStatblock}
         >
           <BookOpenText className="size-3.5" />
         </IconButton>
         {mode === 'tactics' && (
-          <TurnButton
-            name={creature.name}
-            active={active}
-            onClick={onSetActor}
-          />
+          <TurnButton name={entry.name} active={active} onClick={onSetActor} />
         )}
       </div>
 
@@ -331,13 +313,13 @@ function CreatureCard({
                     : 'text-[#c86b68]'
               }`}
             >
-              {creature.state.currentHp}/{creature.state.maxHp}
+              {entry.state.currentHp}/{entry.state.maxHp}
             </span>
             <input
               value={hpDraft}
               inputMode="numeric"
-              aria-label={`Adjust ${creature.name} HP`}
-              placeholder="+/−"
+              aria-label={`Adjust ${entry.name} HP`}
+              placeholder="+/-"
               onChange={(event) => setHpDraft(event.target.value)}
               onBlur={commitHp}
               onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
@@ -348,21 +330,21 @@ function CreatureCard({
             />
             <span className="flex-1" />
             <IconButton
-              label={`Add condition to ${creature.name}`}
+              label={`Add condition to ${entry.name}`}
               active={addingCondition}
               onClick={() => setAddingCondition((current) => !current)}
             >
               C
             </IconButton>
             <IconButton
-              label={`${creature.state.reactionAvailable ? 'Spend' : 'Restore'} ${creature.name} reaction`}
-              active={creature.state.reactionAvailable}
+              label={`${entry.state.reactionAvailable ? 'Spend' : 'Restore'} ${entry.name} reaction`}
+              active={entry.state.reactionAvailable}
               onClick={() =>
                 onUpdate({
-                  ...creature,
+                  ...entry,
                   state: {
-                    ...creature.state,
-                    reactionAvailable: !creature.state.reactionAvailable,
+                    ...entry.state,
+                    reactionAvailable: !entry.state.reactionAvailable,
                   },
                 })
               }
@@ -370,34 +352,34 @@ function CreatureCard({
               <RotateCcw className="size-3.5" />
             </IconButton>
           </div>
-          {(creature.state.conditions.length > 0 || addingCondition) && (
+          {(entry.state.conditions.length > 0 || addingCondition) && (
             <div className="mt-1 flex flex-wrap gap-1">
-              {creature.state.conditions.map((condition) => (
+              {entry.state.conditions.map((condition, index) => (
                 <button
                   type="button"
-                  key={condition}
+                  key={`${condition.ruleId}-${index}`}
                   title="Remove condition"
                   onClick={() =>
                     onUpdate({
-                      ...creature,
+                      ...entry,
                       state: {
-                        ...creature.state,
-                        conditions: creature.state.conditions.filter(
-                          (item) => item !== condition,
+                        ...entry.state,
+                        conditions: entry.state.conditions.filter(
+                          (_, conditionIndex) => conditionIndex !== index,
                         ),
                       },
                     })
                   }
                   className="rounded border border-[#68483c] bg-[#34251f] px-1.5 py-0.5 text-[9px] text-[#d9a080]"
                 >
-                  {condition} ×
+                  {RosterViewModel.selectConditionLabel(roster, condition)} x
                 </button>
               ))}
               {addingCondition && (
                 <input
                   autoFocus
                   value={conditionDraft}
-                  aria-label={`New condition for ${creature.name}`}
+                  aria-label={`New condition for ${entry.name}`}
                   onChange={(event) => setConditionDraft(event.target.value)}
                   onBlur={commitCondition}
                   onKeyDown={(event) => {
@@ -412,7 +394,7 @@ function CreatureCard({
         </>
       )}
 
-      <MotivationList motivations={creature.motivations} />
+      <MotivationList motivations={entry.motivations.map(({value}) => value)} />
     </article>
   );
 }
@@ -433,7 +415,7 @@ function RoundControl({
         onClick={() => onChange(Math.max(1, round - 1))}
         className="grid size-5 place-items-center rounded border border-[#384236]"
       >
-        −
+        -
       </button>
       <span className="min-w-5 text-center font-bold tabular-nums text-[#d8ddd4]">
         {round}
@@ -451,37 +433,34 @@ function RoundControl({
 }
 
 export default function RosterPrototype({
-  creatures: initialCreatures,
-  groups,
-  playerCharacters,
+  roster: initialRoster,
   mode,
   groupPopupOpen: initialGroupPopupOpen = false,
 }: RosterPrototypeProps) {
-  const [creatures, setCreatures] = useState(initialCreatures);
-  const [actorId, setActorId] = useState(
-    playerCharacters[0]?.id ?? initialCreatures[0]?.id,
+  const [creatures, setCreatures] = useState(
+    RosterViewModel.selectCreatures(initialRoster),
   );
-  const [round, setRound] = useState(3);
+  const [actorId, setActorId] = useState(
+    initialRoster.session.initiative?.activeId ??
+      RosterViewModel.selectCreatures(initialRoster)[0]?.id,
+  );
+  const [round, setRound] = useState(
+    initialRoster.session.initiative?.round ?? 1,
+  );
   const [groupPopupOpen, setGroupPopupOpen] = useState(initialGroupPopupOpen);
   const [outOfGameOpen, setOutOfGameOpen] = useState(false);
   const [statblockId, setStatblockId] = useState<string | null>(null);
+  const groups = RosterViewModel.selectGroups(initialRoster);
   const groupsById = useMemo(
     () => new Map(groups.map((group) => [group.id, group])),
     [groups],
   );
-  const initiative = [...playerCharacters, ...creatures]
-    .filter(
-      (
-        participant,
-      ): participant is
-        | RosterCombatant
-        | (RosterCreature & {
-            initiativePosition: number;
-          }) => participant.initiativePosition !== null,
-    )
-    .sort((a, b) => a.initiativePosition - b.initiativePosition);
+  const initiative = RosterViewModel.selectTacticalEntries(
+    initialRoster,
+    creatures,
+  );
 
-  function updateCreature(nextCreature: RosterCreature) {
+  function updateCreature(nextCreature: Participant<'creature'>) {
     setCreatures((current) =>
       current.map((creature) =>
         creature.id === nextCreature.id ? nextCreature : creature,
@@ -489,26 +468,54 @@ export default function RosterPrototype({
     );
   }
 
+  function setStatblockNotice(entry: InitiativeFlow.Entry) {
+    setStatblockId(
+      entry.type === 'creature'
+        ? RosterViewModel.selectStatblockId(initialRoster, entry)
+        : null,
+    );
+  }
+
+  function ExplorationRosterItem({
+    creature,
+    deactivated = false,
+  }: {
+    creature: Participant<'creature'>;
+    deactivated?: boolean;
+  }) {
+    return (
+      <RosterItem
+        roster={initialRoster}
+        entry={creature}
+        groupsById={groupsById}
+        mode={mode}
+        active={creature.id === actorId}
+        deactivated={deactivated}
+        onSetActor={() => setActorId(creature.id)}
+        onOpenStatblock={() => setStatblockNotice(creature)}
+        onUpdate={updateCreature}
+      />
+    );
+  }
+
   function explorationRows() {
-    const primary = creatures.filter(
-      (creature) =>
-        creature.section ===
-        (creatures.some((item) => item.section === 'in-conflict')
-          ? 'in-conflict'
-          : 'non-conflicting'),
+    const sections = RosterViewModel.selectExplorationSections(
+      initialRoster,
+      creatures,
     );
-    const secondary = creatures.filter(
-      (creature) =>
-        creature.section === 'non-conflicting' && !primary.includes(creature),
-    );
-    const outOfGame = creatures.filter(
-      (creature) => creature.section === 'out-of-game',
-    );
+    const primary =
+      sections.inConflict.length > 0
+        ? sections.inConflict
+        : sections.nonConflicting;
+    const secondary =
+      sections.inConflict.length > 0 ? sections.nonConflicting : [];
 
     return (
       <>
         <div className="flex flex-col gap-1">
-          {primary.map((creature) => renderCreature(creature))}
+          {primary.map((creature) => (
+            <ExplorationRosterItem key={creature.id} creature={creature} />
+          ))}
         </div>
         {secondary.length > 0 && (
           <section className="mt-2">
@@ -516,11 +523,13 @@ export default function RosterPrototype({
               Non-conflicting
             </div>
             <div className="flex flex-col gap-1">
-              {secondary.map((creature) => renderCreature(creature))}
+              {secondary.map((creature) => (
+                <ExplorationRosterItem key={creature.id} creature={creature} />
+              ))}
             </div>
           </section>
         )}
-        {outOfGame.length > 0 && (
+        {sections.outOfGame.length > 0 && (
           <section className="mt-2">
             <button
               type="button"
@@ -537,7 +546,13 @@ export default function RosterPrototype({
             </button>
             {outOfGameOpen && (
               <div className="mt-1 flex flex-col gap-1">
-                {outOfGame.map((creature) => renderCreature(creature, true))}
+                {sections.outOfGame.map((creature) => (
+                  <ExplorationRosterItem
+                    key={creature.id}
+                    creature={creature}
+                    deactivated
+                  />
+                ))}
               </div>
             )}
           </section>
@@ -545,48 +560,6 @@ export default function RosterPrototype({
       </>
     );
   }
-
-  function renderCreature(creature: RosterCreature, deactivated = false) {
-    return (
-      <CreatureCard
-        key={creature.id}
-        creature={creature}
-        groupsById={groupsById}
-        mode={mode}
-        active={creature.id === actorId}
-        deactivated={deactivated}
-        onSetActor={() => setActorId(creature.id)}
-        onOpenStatblock={() => setStatblockId(creature.id)}
-        onUpdate={updateCreature}
-      />
-    );
-  }
-
-  const roster = (
-    <div className="min-w-0">
-      {mode === 'tactics' ? (
-        <>
-          <RoundControl round={round} onChange={setRound} />
-          <div className="flex flex-col gap-1">
-            {initiative.map((participant) =>
-              participant.kind === 'player-character' ? (
-                <PlayerCharacterRow
-                  key={participant.id}
-                  participant={participant}
-                  active={participant.id === actorId}
-                  onSetActor={() => setActorId(participant.id)}
-                />
-              ) : (
-                renderCreature(participant)
-              ),
-            )}
-          </div>
-        </>
-      ) : (
-        explorationRows()
-      )}
-    </div>
-  );
 
   return (
     <div className="font-(--lair-font) text-[#d8dbd2]">
@@ -600,9 +573,33 @@ export default function RosterPrototype({
         </IconButton>
       </div>
       <div className="rounded-lg border border-[#323b2f] bg-[#11160f] p-2 shadow-[0_16px_50px_rgba(0,0,0,0.45)] relative">
-        {roster}
+        <div className="min-w-0">
+          {mode === 'tactics' ? (
+            <>
+              <RoundControl round={round} onChange={setRound} />
+              <div className="flex flex-col gap-1">
+                {initiative.map((entry) => (
+                  <RosterItem
+                    key={entry.id}
+                    roster={initialRoster}
+                    entry={entry}
+                    groupsById={groupsById}
+                    mode={mode}
+                    active={entry.id === actorId}
+                    onSetActor={() => setActorId(entry.id)}
+                    onOpenStatblock={() => setStatblockNotice(entry)}
+                    onUpdate={updateCreature}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            explorationRows()
+          )}
+        </div>
         {groupPopupOpen && (
           <GroupPopup
+            roster={initialRoster}
             groups={groups}
             onClose={() => setGroupPopupOpen(false)}
           />

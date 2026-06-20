@@ -98,6 +98,7 @@ const ParticipantFormEntrySchema = z
       id: entry.id,
       setupId: entry.setupId,
       name: entry.name,
+      status: 'inGame',
       variationId: entry.variationId || null,
       groupIds: entry.groupIds,
       motivations: entry.motivations,

@@ -8,11 +8,18 @@ Nx workspace for the TTRPG app prototype. The primary app lives in `apps/lair`; 
 - **PF2e statblock callout plugin**: `O:\obsidian\ttrpg-adventure-plugin\.obsidian\plugins\pf2e-statblock-callout\` — custom Obsidian plugin for rendering PF2e statblocks from callouts. Uses Century Gothic font, CSS-based styling. Reference for future statblock component implementation.
 - **App philosophy**: `docs/planning/ttrpg-app-philosophy.md` — design principles and what the app is/isn't. Read when discussing design direction, UX decisions, or the app's goals.
 
+## Primary language
+
+Ultimately, all the data in the app will be in Russian. Use Russian in fixtures data.
+
 ## Style agreements
 
 - Don't overuse variables. If an expression is self-descriptive, and it's only used in one place, prefer putting it inline (`const relativeToRoot = '../'.repeat(options.libDir.split(/[/\\]/).length);`) instead of creating a variable (`const depth = options.libDir.split(/[/\\]/).length; const relativeToRoot = '../'.repeat(depth);`)
 - Don't use `React` as a default import or as a global. always import functions and types from `React`
 - Self-documenting code is our goal. Self-documenting code doesn't need short comments explaining what it does. By default, don't add comments. If you think the comment is needed, try to find a way to make the code cleaner without comments. If it seems (low confidence) necessary, ask the user. If it's necessary with high confidence, add it right away.
+- Merged declarations (usually a type + a namespace) can be imported as a single unit. There's no need to do things like `import {MyMergedEntity, type MyMergedEntity as MyMergedEntityType} from './my-merged-entity.ts';`. Just `import {MyMergedEntity} from './my-merged-entity.ts';` and use it both as a type and as a value.
+- Use React memoization deliberately. It's necessary to keep effects and other memoizations working, or any other places that care about referential equality. We are not going to have heavy enough computations to justify memoization for the sake of performance. So don't use it by default.
+- Prefer extracting JSX into named components over local `renderX` helpers.
 
 ## Nx guidelines
 

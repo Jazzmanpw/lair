@@ -144,3 +144,17 @@ carefully.
 - Minimum-width prompt/detail columns.
 - Right reference rail behavior.
 - Overlay vs push sidebar for statblocks and A/M surfaces.
+
+## How should domain IDs be branded?
+
+**Question:** What branding pattern should the app use for domain IDs such as participants, typed participant IDs, player characters, encounters, and future rule IDs?
+
+**Why it matters:** Running Mode now uses several string IDs that are easy to mix up. Branded types could prevent accidental cross-entity lookups, but stricter ID types may also add friction while the domain model is still moving.
+
+**Explore:**
+
+- A shared `Brand<Value, Name>` primitive using a `unique symbol`.
+- Template-literal brands such as ``Brand<string, `${Type}-participant-id`>`` for typed participant IDs.
+- Nested brands such as `Brand<Participant.Id, 'creature-participant-id'>`.
+- Zod or factory functions as the sanctioned places where branded IDs are minted.
+- Which IDs are valuable to brand now, which should wait for stronger model boundaries, and which should remain plain strings.

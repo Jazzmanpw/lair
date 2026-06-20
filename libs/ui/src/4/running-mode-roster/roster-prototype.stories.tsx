@@ -1,11 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {expect, userEvent} from 'storybook/test';
-import {
-  averageRosterCreatures,
-  crowdedRosterCreatures,
-  playerCharacters,
-  rosterGroups,
-} from './roster-fixtures.ts';
+import {averageRoster, crowdedRoster} from './roster-fixtures.ts';
 import RosterPrototype, {
   type RosterPrototypeProps,
 } from './roster-prototype.tsx';
@@ -17,9 +12,7 @@ const meta = {
   component: RosterPrototype,
   parameters: {layout: 'centered'},
   args: {
-    creatures: averageRosterCreatures,
-    groups: rosterGroups,
-    playerCharacters,
+    roster: averageRoster,
     mode: 'exploration',
     groupPopupOpen: false,
     width: 320,
@@ -32,9 +25,7 @@ const meta = {
     (Story, context) => (
       <div
         className="bg-[#0d110c] p-6"
-        style={{
-          width: context.args.width + 48,
-        }}
+        style={{width: context.args.width + 48}}
       >
         <Story />
       </div>
@@ -51,11 +42,7 @@ export const Exploration: Story = {
 };
 
 export const Groups: Story = {
-  args: {
-    mode: 'exploration',
-    groupPopupOpen: true,
-    width: 320,
-  },
+  args: {mode: 'exploration', groupPopupOpen: true, width: 320},
 };
 
 export const TacticalRoster: Story = {
@@ -79,9 +66,5 @@ export const TacticalNarrow: Story = {
 };
 
 export const CrowdedWorstCase: Story = {
-  args: {
-    creatures: crowdedRosterCreatures,
-    mode: 'exploration',
-    width: 320,
-  },
+  args: {roster: crowdedRoster, mode: 'exploration', width: 320},
 };

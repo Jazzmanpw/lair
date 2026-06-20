@@ -17,11 +17,11 @@ Start here when returning to Running Mode work.
 
 ## Best Next Move
 
-### A side task
+### A cleanup task
 
-Roster prototyping revealed some weaknesses in design for models around roster. I'd like to address them before moving on to the next component to prototype. [See details here](./tasks/running-mode-roster-model-integration.md).
+Clean up model and prototype organization so future work can distinguish active Running Mode models from historical iteration data. [See details here](./tasks/running-mode-model-cleanup.md).
 
-### Once the side task is done
+### After cleanup is scoped or deferred
 
 Prototype the internals of one core Running Mode content surface. Do not spend time deciding the perfect master-task and subtask structure first; begin with one component, then introduce a master task or split tasks only if the work makes that useful.
 

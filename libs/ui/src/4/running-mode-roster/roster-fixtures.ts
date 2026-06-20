@@ -1,36 +1,36 @@
+import type {ParticipantSetup} from '@lair/domain/manual/prep';
 import type {
-  RosterCombatant,
-  RosterCreature,
-  RosterGroup,
-} from './roster-prototype.tsx';
+  Encounter,
+  InitiativeFlow,
+  Participant,
+  PlayerCharacter,
+} from '@lair/domain/manual/running';
+import {RosterViewModel} from './roster-model.ts';
 
-export const rosterGroups: RosterGroup[] = [
+const groupSeeds = [
   {
     id: 'kennel',
     name: 'Животные питомника',
-    color: '#d5a657',
     aspects: [
       'Общий страх и боль держат их вместе',
       'Заперты в комнате и ищут выход',
     ],
     motivations: ['Вырваться из питомника любой ценой'],
-    section: 'in-conflict',
+    conflicting: true,
   },
   {
     id: 'east-squad',
     name: 'Восточная стая',
-    color: '#77a9c5',
     aspects: ['Держатся у восточного прохода и слушают вожака'],
     motivations: ['Не позволить чужакам пройти к лестнице'],
-    section: 'in-conflict',
+    conflicting: true,
   },
   {
     id: 'servants',
     name: 'Слуги смотрителя',
-    color: '#a88ac1',
     aspects: ['Все должны восхищаться смотрителем и его творениями'],
     motivations: ['Скрыть следы неудачного эксперимента'],
-    section: 'non-conflicting',
+    conflicting: false,
   },
 ];
 
@@ -42,8 +42,7 @@ const creatureSeeds = [
     hp: 30,
     maxHp: 44,
     conditions: ['слепота'],
-    section: 'in-conflict' as const,
-    initiativePosition: 2,
+    status: 'inGame' as const,
   },
   {
     name: 'Окаменевшая собака 2',
@@ -52,8 +51,7 @@ const creatureSeeds = [
     hp: 44,
     maxHp: 44,
     conditions: [],
-    section: 'in-conflict' as const,
-    initiativePosition: 5,
+    status: 'inGame' as const,
   },
   {
     name: 'Окаменевшая крыса 1',
@@ -61,9 +59,8 @@ const creatureSeeds = [
     motivations: [],
     hp: 17,
     maxHp: 24,
-    conditions: ['замедление 1'],
-    section: 'in-conflict' as const,
-    initiativePosition: 7,
+    conditions: ['замедление-1'],
+    status: 'inGame' as const,
   },
   {
     name: 'Окаменевшая крыса 2',
@@ -72,8 +69,7 @@ const creatureSeeds = [
     hp: 24,
     maxHp: 24,
     conditions: [],
-    section: 'non-conflicting' as const,
-    initiativePosition: null,
+    status: 'inGame' as const,
   },
   {
     name: 'Младший смотритель',
@@ -82,8 +78,7 @@ const creatureSeeds = [
     hp: 36,
     maxHp: 36,
     conditions: [],
-    section: 'non-conflicting' as const,
-    initiativePosition: 4,
+    status: 'inGame' as const,
   },
   {
     name: 'Раненый лаборант',
@@ -91,47 +86,160 @@ const creatureSeeds = [
     motivations: ['Дождаться момента и сбежать'],
     hp: 8,
     maxHp: 28,
-    conditions: ['ранен 1'],
-    section: 'out-of-game' as const,
-    initiativePosition: null,
+    conditions: ['ранен-1'],
+    status: 'outOfGame' as const,
   },
 ];
 
-export const averageRosterCreatures: RosterCreature[] = creatureSeeds.map(
-  (seed, index) => ({
-    kind: 'creature',
+const averageParticipants: Participant<'creature'>[] = creatureSeeds.map(
+  (seed, index): Participant<'creature'> => ({
     id: `creature-${index + 1}`,
     name: seed.name,
+    setupId: `setup-creature-${index + 1}`,
+    status: seed.status,
     groupIds: seed.groupIds,
-    motivations: seed.motivations,
-    section: seed.section,
-    initiativePosition: seed.initiativePosition,
+    motivations: seed.motivations.map((value, motivationIndex) => ({
+      id: `creature-${index + 1}-motivation-${motivationIndex + 1}`,
+      value,
+    })),
+    type: 'creature',
+    variationId: null,
     state: {
       currentHp: seed.hp,
       maxHp: seed.maxHp,
       reactionAvailable: index % 3 !== 1,
-      conditions: seed.conditions,
+      resources: [],
+      items: [],
+      conditions: seed.conditions.map((ruleId) => ({ruleId})),
     },
   }),
 );
 
-export const crowdedRosterCreatures: RosterCreature[] = [
-  ...averageRosterCreatures,
-  ...averageRosterCreatures.map((creature, index) => ({
-    ...creature,
+const crowdedParticipants: Participant<'creature'>[] = [
+  ...averageParticipants,
+  ...averageParticipants.map((participant, index) => ({
+    ...participant,
     id: `crowded-${index + 1}`,
-    name: `${creature.name.replace(/\s\d+$/, '')} ${index + 3}`,
+    name: `${participant.name.replace(/\s\d+$/, '')} ${index + 3}`,
     motivations: [],
     state: {
-      ...creature.state,
-      conditions: index % 2 === 0 ? [] : creature.state.conditions,
+      ...participant.state,
+      conditions: index % 2 === 0 ? [] : [...participant.state.conditions],
     },
   })),
 ];
 
-export const playerCharacters: RosterCombatant[] = [
-  {kind: 'player-character', id: 'pc-1', name: 'Айрис', initiativePosition: 1},
-  {kind: 'player-character', id: 'pc-2', name: 'Бран', initiativePosition: 3},
-  {kind: 'player-character', id: 'pc-3', name: 'Кассия', initiativePosition: 6},
-  {kind: 'player-character', id: 'pc-4', name: 'Торвин', initiativePosition: 8},
+const playerCharacters: PlayerCharacter[] = [
+  {type: 'playerCharacter', id: 'pc-1', name: 'Айрис'},
+  {type: 'playerCharacter', id: 'pc-2', name: 'Бран'},
+  {type: 'playerCharacter', id: 'pc-3', name: 'Кассия'},
+  {type: 'playerCharacter', id: 'pc-4', name: 'Торвин'},
 ];
+
+const groupParticipants: Participant<'group'>[] = groupSeeds.map(
+  (group): Participant<'group'> => ({
+    id: group.id,
+    name: group.name,
+    setupId: `setup-${group.id}`,
+    motivations: group.motivations.map((value, index) => ({
+      id: `${group.id}-motivation-${index + 1}`,
+      value,
+    })),
+    type: 'group',
+    state: null,
+  }),
+);
+
+const setupsById: Record<string, ParticipantSetup> = Object.fromEntries([
+  ...groupSeeds.map((group): [string, ParticipantSetup<'group'>] => [
+    `setup-${group.id}`,
+    {
+      id: `setup-${group.id}`,
+      name: group.name,
+      type: 'group',
+      meta: null,
+      concept: {
+        references: '',
+        theme: {
+          aspects: group.aspects.map((value, index) => ({
+            id: `${group.id}-aspect-${index + 1}`,
+            value,
+          })),
+          role: '',
+          feeling: '',
+        },
+        abilities: [],
+      },
+    },
+  ]),
+  ...averageParticipants.map(
+    (participant): [string, ParticipantSetup<'creature'>] => [
+      participant.setupId,
+      {
+        id: participant.setupId,
+        name: participant.name,
+        type: 'creature',
+        meta: {
+          statblockId: `statblock-${participant.id}`,
+          variations: [],
+          groupIds: [],
+        },
+        concept: {
+          references: '',
+          theme: {aspects: [], role: '', feeling: ''},
+          abilities: [],
+        },
+      },
+    ],
+  ),
+]);
+
+const focusedEncounter: Encounter = {
+  dramaticQuestion: 'Смогут ли персонажи безопасно пройти через комнату?',
+  conflictSources: groupSeeds
+    .filter(({conflicting}) => conflicting)
+    .map((group) => ({
+      opposition: group.name,
+      reasons: group.motivations.map((_, index) => ({
+        type: 'motivation',
+        id: `${group.id}-motivation-${index + 1}`,
+      })),
+    })),
+};
+
+const initiative: InitiativeFlow = {
+  order: [
+    'pc-1',
+    'creature-1',
+    'pc-2',
+    'creature-5',
+    'creature-2',
+    'pc-3',
+    'creature-3',
+    'pc-4',
+  ],
+  activeId: 'pc-1',
+  round: 3,
+};
+
+const sharedInput = {
+  playerCharacters,
+  setupsById,
+  focusedEncounter,
+  initiative,
+  groupColors: RosterViewModel.assignGroupColors(groupSeeds.map(({id}) => id)),
+  conditionLabelsByRuleId: {
+    слепота: 'слепота',
+    'замедление-1': 'замедление 1',
+    'ранен-1': 'ранен 1',
+  },
+};
+
+export const averageRoster = RosterViewModel.create({
+  ...sharedInput,
+  participants: [...averageParticipants, ...groupParticipants],
+});
+export const crowdedRoster = RosterViewModel.create({
+  ...sharedInput,
+  participants: [...crowdedParticipants, ...groupParticipants],
+});
