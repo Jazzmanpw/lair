@@ -8,7 +8,7 @@ This is a solo pet project, not a public API surface. Prefer clear current struc
 
 ## External references
 
-- **TTRPG vault**: `E:\Persisted\НРИ` — source content for scenes, creatures, adventures
+- **TTRPG vault**: `E:\Persisted\НРИ` — source content for scenes, creatures, adventures. For the Salty Scars lab adventure room index, see `docs/salty-scars-lab-room-map.md`.
 - **PF2e statblock callout plugin**: `O:\obsidian\ttrpg-adventure-plugin\.obsidian\plugins\pf2e-statblock-callout\` — custom Obsidian plugin for rendering PF2e statblocks from callouts. Uses Century Gothic font, CSS-based styling. Reference for future statblock component implementation.
 - **App philosophy**: `docs/planning/ttrpg-app-philosophy.md` — design principles and what the app is/isn't. Read when discussing design direction, UX decisions, or the app's goals.
 
