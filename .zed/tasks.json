@@ -8,6 +8,11 @@
     "reveal": "never"
   },
   {
+    "label": "@lair/ui-archive storybook",
+    "command": "npx nx storybook @lair/ui-archive",
+    "reveal": "never"
+  },
+  {
     "label": "affected checks",
     "command": "npx nx affected -t typecheck test build",
     "hide": "on_success"
