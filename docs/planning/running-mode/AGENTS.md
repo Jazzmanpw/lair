@@ -14,3 +14,7 @@ When working on Running Mode:
    - Everything else either remains active or is deleted.
 
 The workflow text in `docs/planning/running-mode/README.md` is primarily the developer's personal project reminder. Interpret “you” there as the developer unless the text explicitly addresses agents.
+
+## Visual Verification
+
+After each agreed Running Mode UI prototype edit round, use `$verify-storybook-ui` to inspect the affected Storybook stories before returning to discussion.
