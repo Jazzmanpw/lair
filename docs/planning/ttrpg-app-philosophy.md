@@ -92,14 +92,14 @@ in the app. It is not optional flavor — it is the structural foundation.
 
 In Running mode, information falls into three tiers:
 
-- **Immediate** — visible without any interaction. The GM glances at the screen
+- **T1: Immediate** — visible without any interaction. The GM glances at the screen
   and has it. This is the smallest, most curated set: the things the GM needs
   _right now_ to keep the game moving.
-- **Low-overhead** — one interaction away (a hover, a click, a toggle). Available
+- **T2: Low-overhead** — one interaction away (a hover, a click, a toggle). Available
   fast, but not competing for screen space with the immediate tier. This is the
   "I need this sometimes" layer: full statblocks, detailed concept breakdowns,
   related scene info.
-- **Eventually** — reachable through navigation. Not buried, but not on the
+- **T3: Eventually** — reachable through navigation. Not buried, but not on the
   current screen either. Full prep history, other scenes, building-mode editing.
 
 **Determining which information belongs in which tier is the central design

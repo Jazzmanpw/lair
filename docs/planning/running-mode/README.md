@@ -17,12 +17,14 @@ When moving prototypes between active and archived status, use the [Prototype Li
 
 ## Best Next Move
 
+Prototype scene-description-area.md, then work on models for it, then move on to shared-surface-candidate-inventory.md
+
+## After scene description and shared triggers/interrups surface prototypes
+
 Prototype the internals of one core Running Mode content surface. Do not spend time deciding the perfect master-task and subtask structure first; begin with one component, then introduce a master task or split tasks only if the work makes that useful.
 
 Good next candidates:
 
-- room and action prompts;
-- trigger / interrupt watchlist item;
 - conflict source row;
 - shared A/M surface.
 

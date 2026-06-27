@@ -25,3 +25,16 @@ An all-tabs design and an all-lenses design may both reduce always-visible conte
 
 - lenses preserve the layout and reinterpret it;
 - tabs preserve a navigation position while replacing the active surface.
+
+## Situational Rule
+
+A situational rule is a free-form, scene-local section that provides additional context or mechanics for something that may happen in the scene.
+
+It may describe:
+
+- a special interaction with a place or object;
+- details supporting a skill check or trap;
+- a scene-specific procedure, effect, puzzle, or randomizer;
+- deeper context that does not fit the permanent scene description.
+
+The term does not imply that every situational rule is a formal game-system rule or a physical object. It names the scene-local content role.
