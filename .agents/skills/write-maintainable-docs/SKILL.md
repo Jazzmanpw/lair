@@ -12,6 +12,7 @@ Write docs so one change requires one authoritative edit. Use this workflow befo
 ### 1. Find the right home
 
 - Read the relevant repository instructions and neighboring docs.
+- Define the document's single responsibility and intended reader. Move material that serves a different job even when it is individually useful.
 - Decide where each fact, decision, rationale, example, and historical record belongs.
 - Put information in the narrowest document that fully owns it. Keep global guidance global and local details local.
 - Extend an existing source instead of creating another document with the same responsibility.
