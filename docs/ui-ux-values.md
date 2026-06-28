@@ -1,165 +1,110 @@
 # UI/UX Values
 
-Living document. Guides design decisions across the app.
+This document defines durable, project-wide UI/UX values for Lair. Read [TTRPG App Philosophy](./planning/ttrpg-app-philosophy.md) for the product model that guides them.
 
 ## Visual Identity
 
 ### Palette: The Lair
 
-The app is a lair — a house in a cave in a forest. The palette draws from that environment:
+The app is a lair — a house in a cave in a forest. Its palette draws from that environment:
 
-- **Deep rock gray** — foundation, surfaces, structural elements
-- **Wooden brown** — warmth, accents, interactive elements, borders
-- **Dark needles/leaves green** — secondary surfaces, depth, grouping
-- **Light grass green** — highlights, active states, life, emphasis
+- **Deep rock gray** — foundations, surfaces, and structural elements
+- **Wooden brown** — warmth, accents, and selected interactive elements
+- **Dark needles/leaves green** — secondary surfaces, depth, and grouping
+- **Light grass green** — active states, positive emphasis, and life
 
-#### Concrete Background Tones (mossy stone)
+The semantic palette direction is stable. The concrete colors below are a working palette to evaluate in representative interfaces, not settled design tokens.
 
-Backgrounds use a green-shifted dark tone (mossy stone), not blue-ish:
+#### Background Tones
 
-- `#12170f` — void (darkest, main background)
-- `#151c12` — recessed surfaces (sidebar)
-- `#172015` — elevated surfaces (header, panel bg)
-- `#1d231a` — lighter surface (cards, Fpo, blockquotes)
-- `#262e23` — active/elevated elements
+Backgrounds use green-shifted mossy stone:
+
+- `#12170f` — void and main background
+- `#151c12` — recessed surfaces
+- `#172015` — elevated surfaces
+- `#1d231a` — cards and lighter surfaces
+- `#262e23` — active or further-elevated elements
 - `#2c3428` — borders
-- `#384236` — strong borders (Fpo dashed)
+- `#384236` — strong borders
 
 #### Accent Colors
 
-- Wood: `#8b6c3e` (muted), `#b8944a` (bright) — interactive elements, accents
-- Moss green: `#1e2e20` bg, `#2d3d2e` border — creature/encounter grouping
-- Leaf green: `#5ca64c` (highlight), `#7dd868` (active) — Run button, active indicators
-- Threat badge: `#2d2218` bg, `#b8944a` text — warm brown standalone
+- Wood: `#8b6c3e` (muted), `#b8944a` (bright) — warm accents and selected interactive emphasis
+- Moss green: `#1e2e20` background, `#2d3d2e` border — contextual grouping and depth
+- Leaf green: `#5ca64c` (highlight), `#7dd868` (active) — active and positive states
 
-#### Text Colors (configurable via Storybook globals)
+#### Text Colors
 
-- **Primary text**: `#d4cbb8` (Warmer, default) or `#dcd8cc` (Brighter)
-- **Secondary/dim text**: `#abacb5` (Lighter cool dim, default), `#7a7e88` (Cool dim), or `#9a9080` (Warm dim)
-- **Bright/emphasis text**: `#e8e4d8` (fixed, headings and active labels)
+- **Primary text:** `#d4cbb8` (Warmer, default) or `#dcd8cc` (Brighter)
+- **Secondary text:** `#abacb5` (Lighter cool dim, default), `#7a7e88` (Cool dim), or `#9a9080` (Warm dim)
+- **Bright/emphasis text:** `#e8e4d8` (fixed, headings and active labels)
+
+Primary and secondary text variants remain available through Storybook globals for contextual evaluation. Secondary text is for information that can safely recede: supporting metadata, explanation, and low-priority context. Do not use it for labels, status, interactive targets, or content the GM must find quickly. Its readability depends on size, weight, surrounding contrast, and frequency, so judge it in the real component rather than as an isolated swatch.
 
 ### Dark Mode First
 
-Dark mode is the only theme (for now). Key constraint: **readability over atmosphere**.
-Contrast must be comfortable for extended sessions — not washed-out like Zed "One Dark",
-closer to "Ayu Dark" clarity. The main background may need to be darker than the deep rock
-gray to keep text crisp. Surfaces layer up from the darkest base.
+Dark mode is the only theme for now. Readability wins over atmosphere. Contrast must remain comfortable and clear through an extended session, and important state must not depend on subtle color differences alone. Design surfaces in dark mode from the start rather than darkening a light-mode composition afterward.
 
 ### Typography
 
-Leading candidate: **Rubik** (geometric sans-serif, bold strokes, excellent Cyrillic,
-highly readable at small sizes on dark backgrounds).
+**Rubik is the Lair typeface.** Its geometric sans-serif shapes, strong strokes, Cyrillic support, and small-size readability suit dense dark interfaces.
 
-Alternatives under evaluation: **Century Gothic** (used in PF2e statblock plugin),
-**Nunito Sans** (rounded humanist). All three available via Storybook global toolbar
-for side-by-side comparison.
+Serif does not work for Lair's dense interface. Do not reintroduce it as an atmospheric display face unless a future focused study overturns that conclusion.
 
-Serif fonts (Vollkorn, etc.) deprioritized — sans-serif reads better in dense dark layouts.
+Create hierarchy with a restrained combination of weight, size, color, and spacing. Avoid adding another typeface to manufacture distinction that the information structure should provide.
 
-## Layout Philosophy
+## Information Design
 
-### Space Efficiency
+### Priority, Permanence, and Geometry
 
-Be very (but not extremely) greedy about space. Fit as much information into a single
-screen as possible, or make it easily accessible via simple interactions — tabs, toggles,
-collapsible sections, panels. Not by scrolling the whole page.
+Prominence is contextual. Important information does not automatically deserve permanent space, and permanent information still needs dimensions suited to its actual content. Treat importance, duration of relevance, and required width or height as separate design axes.
 
-### IDE-like Structure
+### Dense, Not Cramped
 
-The app behaves like an IDE, not a document:
+Be very, but not extremely, greedy about space. Prefer a useful set of related information on one screen or behind one simple interaction. Density should come from concise content, clear grouping, and consistent spacing—not tiny targets, weak contrast, or the removal of every quiet area.
 
-- **No overall window scroll** — the viewport is the frame
-- **Fixed height** (100vh) with scrollable panels inside
-- **Panels own their scroll** — each content zone scrolls independently when needed
-- If more panels are needed than fit, use navigation mechanisms (tabs, drawers, routing)
-  rather than extending the page vertically
+Whitespace must have a job, such as separating groups, stabilizing scan paths, or protecting readable line lengths. Empty space is not automatically waste, and filled space is not automatically useful.
 
-### Information Density
+### Reveal Detail Without Losing Orientation
 
-Dense doesn't mean cramped. Breathing room comes from consistent spacing tokens,
-clear visual hierarchy, and grouping — not from generous padding or whitespace.
-Every pixel should earn its place.
+Do not display everything simultaneously. Keep the smallest useful set immediate, reveal related detail together when the GM asks for it, and keep deeper reference material reachable without competing with the current task.
 
-### Keyboard Navigation
+Tabs, toggles, collapsible sections, popups, drawers, side panels, lenses, and navigation are tools rather than prescribed patterns. Choose among them based on information shape, frequency, and whether the GM needs to compare the revealed material with the existing surface. Preserve spatial context where practical; a focused lookup should not casually become an unrelated full-layout switch.
 
-Keyboard access is a core part of the app's running-mode UX, especially for
-overlays, modals, lenses, and frequently toggled panels. Interactions should be
-memorizable and fast: the GM should be able to open the same reference surface
-repeatedly without hunting through the UI.
+Prototype with representative content and difficult states. Layout proportions and truncation rules should be justified by real text lengths, item counts, density states, and interaction needs rather than attractive empty fixtures.
 
-Do not rely on press-and-hold shortcuts for sustained reading. Prefer tap/toggle
-shortcuts that open a stable surface, then close or switch it with another
-deliberate key.
+## Workspace Layout
 
-## Component Intentions
+Primary desktop workspaces, especially Running Mode, behave more like an IDE than a document:
 
-### Scene Page Layout
+- The viewport is the frame; primary workspaces do not use page-level scrolling.
+- Stable regions own their overflow and scroll independently when needed.
+- Content that does not fit moves behind an appropriate navigation or disclosure mechanism instead of extending the whole workspace vertically.
+- Repeatedly used information should have stable placement so the GM can build spatial memory.
 
-The primary workspace. Not a scrollable document — a structured cockpit.
+This is a workspace default, not a ban on document scrolling in a surface whose actual task is long-form reading or authoring.
 
-- **Header zone**: scene name + location breadcrumb in primary text.
-  - **Room description**: always visible, primary text, `<ul>` bullet list.
-    This is the quick-reference info the GM needs at a glance — never hidden.
-  - **Flavor text**: blockquote style (like Notion `>` citation), expanded by default
-    (GM reads it aloud the first time players enter). Collapsible to save space after.
-  - Right side of the header holds the **tab strip** for sub-blocks (encounter info,
-    treasures, skill checks, traps). Vertical list of tab buttons — scrollable if dense.
-    Exploits the empty horizontal space that the header text doesn't fill.
-- **Content area**: displays the active tab's content. Only one sub-block at a time.
-  Full width, full remaining height.
-- **Sidebar rail**: "Linked Scenes" label in **primary text color** (not dim).
-  Contains actual ScenePreviewCard components (not Fpo). Map placeholder below.
+## Interaction
 
-### Scene Preview Card
+### Minimum Interaction, Useful Results
 
-Compact card for linked scene navigation. Lives in the sidebar rail.
+Prefer interactions that reveal a useful related set at once. Do not make the GM repeat the same action for every item when the intent is to inspect or compare the set. At the same time, keep revealed surfaces scoped to the request instead of expanding one action into an indiscriminate information dump.
 
-- Quick glance: title, location breadcrumb, creature/trap summary counts
-- Navigation: click to switch active scene
-- Future: hover tooltip over scene links in text content
+Frequently repeated interactions should be quick, predictable, and reversible. Preserve selection, scroll position, and surrounding context when those states help the GM resume the main task.
 
-### Side Panel
+### Keyboard Access
 
-Push-style right panel for detail views — creature statblock, trap statblock,
-scene deep-dive. Overlays or pushes the content area.
+Keyboard access is core UX for frequently toggled panels, overlays, and other repeated Running Mode actions. Shortcuts should be memorable and expose stable states. Do not rely on press-and-hold shortcuts for sustained reading; prefer deliberate toggle or open/close actions.
 
-### Encounter (two modes)
+Important functionality must still have a visible, discoverable interaction path. Hover and keyboard behavior can accelerate an interaction but should not be its only comprehensible form.
 
-**Encounter tab** (static, within scene page):
-Part of the tabbed content. Shows encounter metadata — threat level, creatures list,
-conflict sources, dramatic question. A preview before running.
+### Editing Friction Matches the Data
 
-Layout: **Run! button** is compact, placed inline next to the threat level badge
-(same visual weight, green accent). Below that, **two-column layout**: creature list
-with counts on the left, tactical notes / battlemap Fpo on the right (1:1 split).
+All user-owned information should be editable, but not every edit should be equally easy to trigger. Ephemeral runtime state should change with minimal friction. Structural or rarely changed data should have a small guard against accidental edits without forcing the GM through a disruptive modal workflow.
 
-**Encounter runner** (active mode):
-Two presentation options:
+## Guardrails
 
-1. **Inline** (primary): replaces the encounter tab content within the scene page layout.
-   The scene header, sidebar, and tab strip remain visible — the GM can still see room
-   info and linked scenes. The encounter tab switches from preview → runner when activated.
-2. **Fullscreen** (secondary): standalone overlay/popup for focused encounter management.
-   Can be minimized to return to the scene view. Kept as a separate story/component.
-
-Runner content:
-
-- Encounter metadata — threat level, dramatic question (always visible,
-  but NOT the creature list — creatures get their own space as tabs below)
-- Initiative order as creature tabs (not a traditional list) with expanded detail
-- **Statblock and actions/abilities side-by-side** (3:1 ratio, statblock gets more space)
-- Condition tracker per creature/PC
-- Passive event reminders for the GM
-- Potentially: tactical notes, map reference
-
-Transitions:
-
-- "Run!" button in the encounter tab → runner takes over content area
-- "End" button in the runner → reverts back to encounter preview tab
-
-## Anti-patterns
-
-- **No page-level scroll** for primary views
-- **No Obsidian-clone** — this is not a formatted text note viewer
-- **No wasted space** — if a zone exists, it should contain useful information or controls
-- **No light-mode-first-then-darkened** — design dark from the start
+- Do not turn the primary app experience into an Obsidian clone or a formatted-note viewer. Lair uses note-taking as a foundation but actively structures and surfaces context.
+- Do not reserve permanent space merely because information matters at some point.
+- Do not hide information the GM must quickly find behind dim styling, hover alone, or an unrelated navigation change.
+- Do not maximize density at the cost of scanning, readable text, clear grouping, or usable targets.

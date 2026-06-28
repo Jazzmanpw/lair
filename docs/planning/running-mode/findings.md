@@ -13,6 +13,8 @@ Keep findings chronological. Do not delete or rewrite an older finding when it s
 **Superseded by:** [F007 - Later finding](#f007---later-finding), which changed/replaced the earlier finding by ...
 ```
 
+When a finding establishes project-wide UI/UX guidance, promote that guidance to [`docs/ui-ux-values.md`](../../ui-ux-values.md) and add a **Promoted to** link to the finding. Promotion preserves both layers: the global document holds the shared guidance, while the finding remains the evidence and scoped implications behind it.
+
 Use **Alternatives considered** only for alternative solutions to the same problem that were seriously considered and whose rejection remains useful context. It is not a required section.
 
 ## F001 - Use a design memory system for Running Mode planning
@@ -68,6 +70,8 @@ system can wait until the Running Mode version has been used enough to evaluate.
 permanence, and required width or height. A piece of information can be important
 without deserving permanent screen space, and a permanent scan zone can still
 need a specific size based on its data shape.
+
+**Promoted to:** [Priority, Permanence, and Geometry](../../ui-ux-values.md#priority-permanence-and-geometry)
 
 **Why:**
 

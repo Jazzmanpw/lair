@@ -2,12 +2,6 @@ import type {Preview} from '@storybook/react-vite';
 import type {CSSProperties} from 'react';
 import '../src/styles.css';
 
-const fontMap: Record<string, string> = {
-  rubik: '"Rubik", sans-serif',
-  'century-gothic': '"Century Gothic", sans-serif',
-  'nunito-sans': '"Nunito Sans", sans-serif',
-};
-
 const preview: Preview = {
   beforeEach: [
     ({canvasElement}) => {
@@ -41,23 +35,10 @@ const preview: Preview = {
         dynamicTitle: true,
       },
     },
-    font: {
-      name: 'Font',
-      toolbar: {
-        icon: 'document',
-        items: [
-          {value: 'rubik', title: 'Rubik'},
-          {value: 'century-gothic', title: 'Century Gothic'},
-          {value: 'nunito-sans', title: 'Nunito Sans'},
-        ],
-        dynamicTitle: true,
-      },
-    },
   },
   initialGlobals: {
     textColor: '#d4cbb8',
     dimColor: '#abacb5',
-    font: 'rubik',
     backgrounds: {
       value: 'lair-void',
     },
@@ -69,8 +50,6 @@ const preview: Preview = {
           {
             '--lair-text': context.globals['textColor'] || '#d4cbb8',
             '--lair-text-dim': context.globals['dimColor'] || '#abacb5',
-            '--lair-font':
-              fontMap[context.globals['font']] || '"Rubik", sans-serif',
           } as CSSProperties
         }
       >
