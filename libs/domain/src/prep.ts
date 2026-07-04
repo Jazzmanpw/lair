@@ -72,3 +72,11 @@ export type EncounterSetup = {
     motivations: ParticipantMotivation[];
   }[];
 };
+
+export type Scene = {
+  id: string;
+  title: string;
+  flavorText: string | null;
+  entranceReminder: string | null;
+  details: string[];
+};

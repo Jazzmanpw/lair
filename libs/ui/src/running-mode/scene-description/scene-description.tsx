@@ -1,9 +1,9 @@
 import {BellRing, Feather, List, Map, X} from 'lucide-react';
 import {type ReactNode, useState} from 'react';
-import type {SceneDescriptionFixture} from './scene-description-fixtures.ts';
+import type {Scene} from '@lair/domain/prep';
 
 export type SceneDescriptionProps = {
-  scene: SceneDescriptionFixture;
+  scene: Scene;
   showSceneTitle?: boolean;
   hasMap?: boolean;
   reminderStartsOpen?: boolean;
@@ -56,11 +56,11 @@ function CloseButton({label, onClick}: {label: string; onClick: () => void}) {
   );
 }
 
-function SceneDetails({scene}: {scene: SceneDescriptionFixture}) {
+function SceneDetails({scene}: {scene: Scene}) {
   return (
     <ul className="flex list-disc flex-col gap-2 pl-5 marker:text-[#9db087]">
-      {scene.details.map(({label, text}) => (
-        <li key={label} className="pl-1 text-sm leading-5 text-[#dcd8cc]">
+      {scene.details.map((text) => (
+        <li key={text} className="pl-1 text-sm leading-5 text-[#dcd8cc]">
           {text}
         </li>
       ))}
