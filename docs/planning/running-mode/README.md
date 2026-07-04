@@ -17,7 +17,7 @@ When moving prototypes between active and archived status, use the [Prototype Li
 
 ## Best Next Move
 
-Prototype scene-description-area.md, then work on models for it, then move on to shared-surface-candidate-inventory.md
+Work on models for `scene-description`, then move on to `shared-surface-candidate-inventory.md`
 
 ## After scene description and shared triggers/interrups surface prototypes
 
@@ -37,6 +37,10 @@ The component studies should feed [Running Mode Layout R2 framing](./r2-framing.
 `R[n]` means round number `n` of prototyping for one named surface, not a project-wide iteration. Layout R1 generated component-internal studies that feed Layout R2; those side studies do not use round notation unless that particular component later needs another explicit prototyping round.
 
 Component-study notes live beside their Storybook artifacts. The participant and roster note is at [`libs/ui/src/running-mode/roster/README.md`](../../../libs/ui/src/running-mode/roster/README.md).
+
+## Related Cross-Mode Memory
+
+[Building Mode content authoring guidance](../building-mode/content-authoring-guidance-draft.md) collects authoring constraints discovered while testing prepared content in Running Mode. It is related planning memory rather than part of the Running Mode findings/hypotheses/open-questions system.
 
 ## Previous Step
 

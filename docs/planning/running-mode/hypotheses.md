@@ -185,6 +185,28 @@ and whether maps are primary or secondary in Running Mode.
 contrast handling, and enough empty map area to judge whether the approach
 survives.
 
+## A lightweight scene sketch can replace room geometry prose
+
+**Hypothesis:** An optional, quickly authored scene sketch can carry room shape, dimensions, and passages to adjacent places more readably than repeated prose in scene details.
+
+**Why it seems plausible:** These facts are spatial, recur in room scenes, and currently consume several lines without becoming especially easy to scan. The scene-description prototype showed that a small SVG can make a circular room, its exits, and their destinations legible at a glance while allowing the persistent bullet list to stay shorter. Non-room scenes may not need a sketch.
+
+**Would affect:** Scene prep data, scene-description fixtures, Building Mode authoring, map popup access, and the boundary between scene details and spatial context.
+
+**How to test:** Run a focused scene-sketch prototype covering the initial scope of room shape and dimensions plus passages to adjacent places. Define semantics and authoring constraints, then stress it with irregular rooms, multiple levels, unusual passage geometry, missing destinations, and scenes that are not rooms. Evaluate whether simple SVGs remain fast to create and edit before investing in visual polish or AI-assisted authoring.
+
+## Overflowing scene details may expand as an anchored overlay
+
+**Hypothesis:** A fixed-height scene-description card can handle occasional overflow with an edge-mounted expand control that keeps the top edge fixed and extends the card downward over neighboring content.
+
+**Why it seems plausible:** The normal state keeps a predictable layout budget and internal scrolling remains available immediately. When the GM needs to scan the whole list, temporary downward expansion would expose it without permanently enlarging the header-like region or demoting scene details to T2. This sits between an always-scrolling fixed card and moving the entire surface into a popup.
+
+This resembles a notification shade or an anchored expanding overlay more than an ordinary accordion: expansion overlays the layout instead of reflowing it.
+
+**Would affect:** Scene-description overflow, z-index and clipping rules, the component's relationship to content below it, keyboard and focus behavior, and full-screen layout composition.
+
+**How to test:** Only if layout prototypes show meaningful scene-detail overflow. Add a border-mounted expand/collapse control, preserve the card's top position, let its bottom overlay adjacent content, and check whether the temporary occlusion is less disruptive than scrolling or a T2 popup.
+
 ## A tabbed workbench may help only after the stable frame is clear
 
 **Hypothesis:** A tabbed workbench can organize low-overhead surfaces, but only

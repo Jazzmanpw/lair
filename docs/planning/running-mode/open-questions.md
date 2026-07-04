@@ -145,6 +145,22 @@ carefully.
 - Right reference rail behavior.
 - Overlay vs push sidebar for statblocks and A/M surfaces.
 
+## Can scene details become an image-led scan surface?
+
+**Question:** Could a future visual scene-description surface make prepared facts faster to recognize than a bullet list?
+
+**Why it matters:** Most scene-detail facts describe a visible place or object. Visual indexing might let the GM relocate a fact without rereading text, but it introduces substantial authoring cost, interaction complexity, and difficult edge cases. It would also make the app depend more heavily on prepared visuals: text is easier to revise when a scene changes, while alternate images or annotations for events such as fires, revealed doors, or collapsing walls require prep that may never be used. That investment can subtly encourage the GM to steer play toward prepared visual states. The current bullet list is sufficient, so this is a deferred feature direction rather than an implementation dependency.
+
+**Explore:**
+
+- One scene image or tactical map with information hotspots corresponding roughly one-to-one with scene-detail bullets.
+- Hover or focus revealing the text for one hotspot, plus a lens-like state that reveals every annotation for quick scanning.
+- A list of separate minimal landmark images, such as rugs, alchemy shelves, or holes in the ceiling, with descriptions available as T2 content.
+- Authoring and editing without relying on image generation for MVP.
+- How to keep free play and easy runtime edits primary instead of making prepared visual states feel prescriptive.
+- Crowded scenes, abstract or non-room scenes, hidden or overlapping landmarks, mobile or keyboard access, and layouts where annotations obscure the image.
+- Whether this should remain a separate visual surface instead of replacing text.
+
 ## How should domain IDs be branded?
 
 **Question:** What branding pattern should the app use for domain IDs such as participants, typed participant IDs, player characters, encounters, and future rule IDs?

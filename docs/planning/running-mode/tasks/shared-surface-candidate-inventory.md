@@ -75,6 +75,23 @@ Keep situational rules in this inventory because deciding whether they deserve T
 
 Do not require hover, pin, or deep-reference interaction prototypes during this inventory or the first item-internals pass. First determine whether a situational rule merits a compact reminder and what it should say. Prototype deeper reference behavior separately, then reconnect it to list entries if needed.
 
+## Inquiry And Action Checks
+
+The [Building Mode content authoring guidance](../../building-mode/content-authoring-guidance-draft.md#scene-details) defines scene details as facts the PCs can notice without checks. This creates a useful relationship with checks for noticing, identifying, remembering, or otherwise learning additional information: the GM often scans the immediately visible facts first, then asks what else the PCs might perceive or know.
+
+Explore a provisional distinction based on what the players are doing:
+
+- **Inquiry:** asking, looking around, recalling, or examining without materially committing to an action.
+- **Action:** manipulating, traversing, searching physically, or otherwise risking or changing the situation, even when the result also reveals information.
+
+Inventory whether inquiry-related checks need different T1 placement, ordering, wording, or visual treatment from action checks such as climbing a wall, forcing a door, or physically rummaging through unstable shelves. This may be more useful during play than grouping checks by mechanical type, but it should remain an interaction hypothesis rather than becoming a canonical taxonomy without evidence.
+
+Questions to preserve:
+
+- Does adjacency to scene details help the GM notice information-gathering checks at the right moment?
+- Can one skill-check item grammar support both inquiry and action?
+- Is a lightweight runtime lens or ordering rule enough, or do these groups need distinct surfaces?
+
 ## Uncluttering Strategies
 
 Trying to keep every potentially useful reminder in focus is a harmful default driven by fear of forgetting. It would make the surface unmanageable and undermine scanning. The design must curate focus while keeping de-emphasized or dismissed information recoverable.
@@ -120,6 +137,7 @@ The list/surface prototype should come after item internals. Item prototypes sho
 - Which candidate types provide useful reminders for this surface?
 - Which additional candidates should receive their own internals prototype?
 - Are skill checks and traps similar enough to share T1 or T2 grammar?
+- Should checks for noticing or learning information be surfaced differently from checks for acting on the environment?
 - Which candidates need different T1 wording or priority in different situations?
 - What compact type mapping could distinguish candidates without creating heavy taxonomy inside the surface or across several similar adjacent areas?
 - Which uncluttering strategies are worth carrying into list-level prototypes?

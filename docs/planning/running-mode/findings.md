@@ -266,3 +266,74 @@ The turn action belongs with the other explicit controls on the right. A flag bu
 - **Editing exact HP directly:** rejected because the GM usually thinks in deltas during play.
 - **Persistent condition input:** rejected because most creatures have no conditions most of the time.
 - **Turn dot on the left:** rejected because it was difficult to click and created awkward spacing.
+
+## F010 - Scene details use a bullet list
+
+**When:** After Scene Description Area R2 feedback.
+
+**Finding:** Scene details use a short bullet list as their current primary representation.
+
+**Why:**
+
+The raw bullet list keeps independent visible facts compact, easy to scan, and easy to relocate without inventing relationships between them. Wrapping remains readable because each bullet is one coherent fact.
+
+This finding selects the practical text representation for current implementation and layout work. It does not rule out future image-led scene-description systems, which require separate authoring and interaction studies before they can justify replacing text.
+
+**Implications:**
+
+- Preserve bullet-list behavior when integrating scene details into future layouts.
+- Keep the list concise and allow wrapping inside each coherent fact.
+- Do not add labels or row structure unless the authored data gains a real structure that makes them useful.
+
+**Alternatives considered:**
+
+- **Prose:** rejected because combining the facts into a paragraph made individual details harder to scan and relocate.
+- **Labeled fact rows:** rejected because labels and row structure consumed substantially more space without adding useful information or scanning value.
+
+**Deferred directions:**
+
+- A lightweight scene sketch may carry room geometry and passages.
+- An image-led landmark index or annotated scene image may eventually replace text-first scanning, but neither is required for the current implementation.
+
+## F011 - Flavor text works as an optional scene-details lens
+
+**When:** After Scene Description Area R2 feedback.
+
+**Finding:** Optional flavor text can replace scene details in the same bounded area through a lens.
+
+**Why:**
+
+Flavor text and scene details have similar reading dimensions but matter at different moments. Reusing the same body preserves the component footprint while keeping introductory narration recoverable. When flavor text is absent, hiding both lens controls avoids presenting a meaningless one-option switch.
+
+**Implications:**
+
+- Keep scene details as the default persistent body after scene entry.
+- Let flavor text temporarily replace that body without resizing the surrounding layout.
+- Show the flavor/details controls only when flavor text exists.
+- Preserve direct keyboard access as a later interaction concern even when no visible toggle is needed.
+
+**Alternatives considered:**
+
+- **A collapsible block above scene details:** rejected because showing both bodies increased the component's vertical scaling problem and made the surrounding layout pay for entry-time content.
+
+## F012 - Entrance reminders start closed and draw attention
+
+**When:** After Scene Description Area R2 feedback.
+
+**Finding:** Entrance reminders should start closed behind a visually prominent control rather than opening their popup automatically.
+
+**Why:**
+
+The attention-drawing control preserves the scene-description scan area, makes the time-sensitive reminder difficult to miss, and keeps access to it one quick interaction away.
+
+This finding is expected to be retested in a full layout, where surrounding density, startup behavior, and keyboard shortcuts may change the balance.
+
+**Implications:**
+
+- Use the closed attention state as the default direction for future prototypes and initial implementation.
+- Keep the open-first treatment as a fallback if drawing sufficient attention becomes difficult in a densely packed full-screen layout.
+- Ensure attention is communicated by more than color alone.
+
+**Alternatives considered:**
+
+- **Open the reminder immediately:** rejected as the default because the popup broke out of the layout and felt too disruptive as the first thing shown when navigating to a scene.
