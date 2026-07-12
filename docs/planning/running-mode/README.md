@@ -17,7 +17,7 @@ When moving prototypes between active and archived status, use the [Prototype Li
 
 ## Best Next Move
 
-Work on `shared-surface-candidate-inventory.md`
+Work on `inquiry-reference-item-internals.md`
 
 ## After scene description and shared triggers/interrups surface prototypes
 

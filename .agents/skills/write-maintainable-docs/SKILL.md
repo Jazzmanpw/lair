@@ -40,6 +40,7 @@ Write docs so one change requires one authoritative edit. Use this workflow befo
 ### 5. Review for maintenance
 
 - Confirm that every durable point has one source.
+- Before telling the developer that a document is written, describe the document's intended purpose to yourself and check that the document serves that purpose without mixing unrelated responsibilities.
 - Check links, headings, anchors, terms, scope, and certainty after moving content.
 - Read the result as someone returning months later without the original conversation.
 - Remove a new document or section when an existing source plus a link does the same job.

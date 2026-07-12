@@ -75,6 +75,12 @@ all of these are prep-time drafts. At runtime, any of them can shift, be
 discarded, or be created from scratch. The app should make seeding fast and
 deviation painless.
 
+### Prep describes a decision space, not an action menu
+
+The app should help the GM prepare and retrieve the fictional possibilities, consequences, and discovery hooks that make player decisions meaningful. It should not present prepared content as a menu of actions the players are expected to choose.
+
+Preparing likely questions, checks, procedures, and consequences is useful because the GM cannot improvise every interesting ruling under table pressure. That preparation should remain available when play creates a reason to need it, without turning guesses about player interest into prompts, recommendations, or rails.
+
 ### The Angry GM encounter model is the backbone
 
 The app's encounter model follows the Angry GM framework:

@@ -30,36 +30,104 @@ Each entry should use this shape:
 - Where add-participant and other roster-level actions live outside the roster.
 - Whether condition controls keep the `C` label or adopt an icon once the wider control language exists.
 
-## What exactly is a room/action prompt?
+## Do inquiry references remain a coherent specialization?
 
-**Question:** Are room prompts mainly descriptive bullets, player-action
-affordances, collapsible rows, annotated text, or some hybrid?
+**Question:** Does the current inquiry-reference shape remain coherent as more real adventure prep is authored?
 
-**Why it matters:** The main room surface needs very different width and
-interaction treatment depending on whether it is prose-first or action-row-first.
+**Why it matters:** Salty Scars checks repeatedly combine an information-seeking action and target, roll mechanics, and facts disclosed by the result. That shape is useful enough to prototype without assuming that every discovery interaction or action check belongs in it.
 
 **Explore:**
 
-- Physical room details.
-- Player-facing hints.
-- Environmental interaction hooks.
-- "If players do X" prompt framing.
-- Relationship to skill checks and triggers.
+- Recall Knowledge, Identify Magic, Search, Seek, examination, and hidden-object discovery.
+- Mixed discovery and manipulation.
+- Checks whose outcomes include consequences as well as facts.
+- Boundaries with scene details and free-form procedure notes.
+- Whether the working seek-facts versus interact-with-the-situation distinction survives continued Lab prep.
 
-## Can A/M cues join triggers and interrupts on a shared surface?
+## How can reminder items be authored during runtime?
 
-**Question:** Can the app use one watchlist-like surface for scene triggers,
-tactical interrupts, and behavior/A-M cues, or do these need separate widgets?
+**Question:** How can a GM create or promote reminder items during play without turning the reminder surface into a separate rules engine?
 
-**Why it matters:** This may become a central Running Mode UX concept. It also
-affects whether exploration and tactics feel like one continuous screen.
+**Why it matters:** The first reminder prototypes use static prep fixtures, but play can create new reminder-worthy content: a creature gains a reaction, an elixir or spell changes available interrupts, the GM improvises an environmental consequence, or a free-form note becomes important enough to keep visible. This may be ordinary prep-data authoring during Running Mode rather than a special mixed runtime/prep model.
 
 **Explore:**
 
-- Urgency: reactive/time-critical vs calm reference.
-- Initiation: player-initiated action vs system/creature reaction.
-- Ownership: scene, hazard, participant, conflict source, or group.
-- Mode transitions: when a trap trigger becomes tactical interrupt-like.
+- View-only custom reminder fixtures before designing creation flow.
+- Whether a reminder is best represented as a note linked to context and marked for reminder display.
+- Prep-authored versus runtime-authored reminders.
+- Source attribution, persistence after the session, cleanup, and pruning.
+- How runtime-authored reminders interact with dismissal, recovery, and list filtering.
+
+## Does Running Mode need a dedicated note-reading area?
+
+**Question:** Should expanded reminder, inquiry, and reference content open in local rows, popups, adjacent detail, or a dedicated reading area?
+
+**Why it matters:** Item-internals work can test row and popup treatments, but the broader workspace may eventually have an empty middle area or workbench-like region that could host pinned note reading without losing orientation. This decision affects both discovery and reference retrieval.
+
+**Explore:**
+
+- Accordion or disclosed rows for quick local reading.
+- Popup-like detail for brief checks.
+- Adjacent detail or a central reading area with tabs or pinned items.
+- Whether a reading area belongs to the later contextual-reference prototype rather than the immediate reminder/inquiry list work.
+
+## What should focus surfaces be called?
+
+**Question:** What should Lair call surfaces that gather relevant information from different sources for one GM mental activity, without confusing them with lenses?
+
+**Why it matters:** Lenses currently mean in-place reinterpretation or augmentation of existing layout content, like colored glass over the same workspace. A focus surface is different: it creates a separate thinking space where rules references, prepared notes, participants, targets, or other streams can gather around one task. Reusing "lens" for both patterns would blur two different interaction goals.
+
+**Explore:**
+
+- Candidate metaphors such as prism, confluence, stream, pipe, workbench, or another short name that implies information gathering for the GM's focus.
+- Whether an established UI/UX or software pattern already names this interaction.
+- How the name should distinguish "show different information while preserving layout" from "gather related information into a focused surface."
+- Whether the chosen name should also suggest authoring, pinning, or manual composition.
+
+## What focus surfaces might recur across Running Mode?
+
+**Question:** Which GM activities deserve focus surfaces, and what guidelines would prevent each one from becoming a hard-baked special screen?
+
+**Why it matters:** Inquiry, stealth, tactical targets, and future rules-reference workflows may all need a place that gathers relevant data from multiple sources. This pattern is promising but deep: it touches information architecture, contextual retrieval, authoring, manual composition, and how much app structure should be built around reusable note/reference screens.
+
+**Explore:**
+
+- Inquiry surface: prepared inquiry references plus relevant system references.
+- Stealth surface: participant perceptions, stealth mechanics, environmental notes, and reminders.
+- Targets surface: participant defenses and tactical targeting information.
+- Manual composition versus contextual aggregation.
+- How a GM authors or curates a focus surface without the app becoming a fixed collection of hard-baked rules pages.
+- When to use a focus surface instead of a lens, popup, reference rail, tabbed workbench, or ordinary note reading.
+
+## Can inquiry references be organized around inquirable targets without forcing scene-object ceremony?
+
+**Question:** Can inquiry references be authored or retrieved around inquirable scene targets instead of action-target pairs, without making scene prep require heavy object modeling?
+
+**Why it matters:** Many inquiries are about physical objects, magical effects, creatures, or other scene elements. A target-centered model might make retrieval more robust and let the app aggregate inquiry options from linked content, but it could also turn prep into a CRPG-like inspectable-object list, create edge cases for facts not tied to one object, and impose too much authoring ceremony.
+
+**Explore:**
+
+- Target-first inquiry rows with inquiry-type icons and exact mechanical action in T2.
+- Objects, effects, and features as optional authored anchors rather than required scene structure.
+- Smart note parsing or lightweight links that avoid forcing every scene detail into a formal object model.
+- Cases where one inquiry spans several targets, one target has several inquiry modes, or the relevant fact belongs to a cross-scene rule.
+- Building Mode support for authoring and pruning inquirable targets if the pattern proves useful.
+
+## How should contextual reference retrieval follow links?
+
+**Question:** How should a contextual reference surface find and explain relevant prep across direct, reverse, and transitive references?
+
+**Why it matters:** Free-form procedure notes, inquiry references, creatures, items, scenes, and other prep can share one connected reference substrate while retaining different internal structures. Running Mode needs discovery from the current context; Building Mode needs authoring, linking, reuse, overview, and pruning. A naive traversal could either miss useful second-order material or make heavily connected content appear relevant everywhere.
+
+**Explore:**
+
+- A global reference collection initially filtered or prioritized by the current scene or other context.
+- Direct links, backlinks, and second- or third-order references.
+- How inferred relevance is explained.
+- Controls for broadening from the current scene to another scene, adventure, or the complete collection.
+- How recurring free-form prep shapes can acquire structured modules without losing ordinary note composition and navigation.
+- Authoring support for finding reuse opportunities, understanding where a unit is used, and pruning obsolete or orphaned units.
+- Whether the first focused prototype should use free-form procedure notes while preserving a later path to heterogeneous reference types.
 
 ## How should conflict source rows work?
 
@@ -76,7 +144,7 @@ them with threat badges and misunderstood A/M highlight widgets.
 - Opposition text.
 - Linked participants or reasons.
 - Hover/focus cross-highlighting to participant cards.
-- Whether conflict sources can emit watchlist items.
+- Whether conflict sources can emit concrete reminder items.
 
 ## What is the shared A/M surface's internal structure?
 
@@ -92,7 +160,6 @@ The surface needs to be fast enough to use without becoming a constant panel.
 - Grouped by participant vs grouped by aspect/motivation.
 - Cross-highlighting with conflict sources.
 - Search/filter/pin behavior.
-- Whether A/M entries can feed the trigger/watchlist model.
 
 ## How should lenses be activated and represented?
 

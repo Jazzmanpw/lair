@@ -28,13 +28,12 @@ An all-tabs design and an all-lenses design may both reduce always-visible conte
 
 ## Situational Rule
 
-A situational rule is a free-form, scene-local section that provides additional context or mechanics for something that may happen in the scene.
+A situational rule is the current name for a free-form prep-note usage that provides additional context or mechanics for something that may happen. It can relate to one scene, several scenes, an adventure, or other prepared content; it is not owned by a scene merely because that scene makes it relevant.
 
-It may describe:
+The term does not imply that every situational rule is a formal game-system rule or a physical object. The [Building Mode content authoring guidance](../building-mode/content-authoring-guidance-draft.md#situational-rules) owns its content role and relationship to more structured prep units.
 
-- a special interaction with a place or object;
-- details supporting a skill check or trap;
-- a scene-specific procedure, effect, puzzle, or randomizer;
-- deeper context that does not fit the permanent scene description.
+## Inquiry Reference
 
-The term does not imply that every situational rule is a formal game-system rule or a physical object. It names the scene-local content role.
+An inquiry reference is an authored prep note the GM can consult when players seek information through a check. It points to roll-guarded discovery content without implying that every possible inquiry is prepared in advance.
+
+Its authored identity currently records an inquiry action and target, while its in-app T1 identity remains a prototype question. Its resolution content contains the roll mechanics and the facts disclosed by its effects. The [Building Mode content authoring guidance](../building-mode/content-authoring-guidance-draft.md#inquiry-references) owns its authoring shape and expected coverage.

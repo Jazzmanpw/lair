@@ -15,6 +15,8 @@ When working on Running Mode:
 1. Read `docs/planning/running-mode/README.md` first, followed by the referenced task and relevant design-memory documents.
 2. Add "Status: in progress" at the beginning of the referenced task file. The content doesn't really matter, but it makes the task file show up in uncommitted changes, which makes it more likely for dev to remember to remove it before committing work.
 3. Treat task files as discussion briefs unless they explicitly say implementation is ready.
+   - Task files are disposable working briefs. The developer normally removes them when the work is complete; agents should not remove task files unless explicitly asked. Before completion, make sure every durable decision, finding, hypothesis, open question, or follow-up task has been promoted into its owning artifact instead of living only in the task file.
+   - When a task absorbs an existing hypothesis, include it in the task's questions, alternatives, or prototype assumptions, and remove or narrow the original `hypotheses.md` entry so the idea has one active home.
 4. Inspect the existing context, then ask only the specific unresolved questions that require developer input before implementation. Do not answer open product or domain questions on the developer's behalf.
    - The developer has already reviewed the task document thoroughly and knows the context it contains. Do not restate settled requirements or propose a full scope for approval.
    - Start with "Here are the decisions I need from you" or similarly direct framing, followed by focused questions. If no genuinely open decisions remain, say so and begin implementation. Prototype tasks usually contain unresolved questions, so verify carefully before concluding that none remain.

@@ -1,8 +1,6 @@
 # Running Mode Hypotheses
 
-Hypotheses are shaped answers worth testing. They are not findings yet. Remove a
-hypothesis once it has been tested and always write one or more findings from the
-result, whether the hypothesis worked or failed.
+Hypotheses are shaped answers worth preserving until they have an active task home or have been tested. They are not findings yet. Remove a hypothesis once it is moved into task content or resolved by testing. When testing resolves it, write one or more findings from the result, whether the hypothesis worked, failed, or split into a better direction.
 
 Each entry should use this shape:
 
@@ -75,56 +73,26 @@ available.
 **Would affect:** Scene header content, right reference rail, session workspace,
 mode transitions, and the relationship between room prompts and participants.
 
-**How to test:** Prototype a shell with room identity/prompts across the header,
+**How to test:** Prototype a shell with scene identity, details, and prepared inquiry references across the header,
 prep/reference material in the right column, and participants plus active
 session work in the remaining body. Check whether prep still feels immediate
 enough during exploration.
 
-## Room prompts and skill checks want wider collapsible rows
+## An inquiry focus surface may combine prepared inquiries with system references
 
-**Hypothesis:** Room/action prompts and scene skill checks should use
-action-oriented rows in a wider column, with detailed data in collapsible
-sections, sidebars, or popups.
+**Hypothesis:** A dedicated inquiry focus surface may combine prepared inquiry references with relevant system references so the GM can resolve information-seeking play even when no specific prepared reference is immediately visible.
 
-**Why it seems plausible:** This content has an action-oriented default ("what
-players do or notice") plus larger supporting detail such as DC, effects, and
-outcomes. It differs from participant cards, which are compact state containers.
+**Why it seems plausible:** Inquiry moments often need both authored adventure prep and generic system procedures such as Recall Knowledge, Identify Magic, Search, Seek, DC guidance, or degree-of-success handling. A 5e14-style composed reference page shows the usefulness of gathering related rules in one place, but Lair should treat this as composable note/reference tooling rather than a hard-baked fixed rules screen.
 
-**Would affect:** Room prompt internals, trigger internals, immediate/low-overhead
-split, and column width rules.
+**Would affect:** Inquiry references, contextual reference retrieval, system-reference authoring, and future focus-surface patterns.
 
-**How to test:** Prototype room/action prompt rows and skill-check rows with real
-or realistic text, then measure comfortable widths and expanded detail behavior.
+**How to test:** After inquiry item internals and contextual retrieval are better understood, prototype a focused inquiry surface that combines scene-relevant inquiry refs with manually selected or contextually relevant system references. Check whether it reduces lookup pressure without implying every possible inquiry was prepared.
 
-## Triggers and interrupts may share a reactive watchlist model
+## The shared A/M surface is participant-centered behavior context
 
-**Hypothesis:** Scene triggers and tactical interrupts can share a common
-"something might fire now" surface, but items should be grouped or weighted by
-urgency and initiation model.
+**Hypothesis:** A shared A/M surface should provide participant-centered behavior context: a fast way to see relevant aspects and motivations for active participants without turning them into authored reminder conditions.
 
-**Why it seems plausible:** Both categories remind the GM to check whether
-something should happen now. However, skill checks, trap triggers, creature
-reactions, and A/M cues do not all have the same urgency. Trap reactions are the
-strongest bridge case because they can behave like scene triggers in exploration
-and interrupts in tactics.
-
-**Would affect:** Trigger component internals, interrupt placement, tactical mode
-transition, and possible watchlist data model.
-
-**How to test:** Prototype a watchlist with examples from scene traps, skill
-checks, creature reactions, passive abilities, and conflict/A-M cues. Test
-whether one surface works or whether the concept splits into a reactive watchlist
-plus calmer action prompts.
-
-## The shared A/M surface is participant-centered trigger context
-
-**Hypothesis:** A shared A/M surface should work like participant-centered
-trigger context: a fast way to see behavior-relevant aspects and motivations for
-active participants.
-
-**Why it seems plausible:** Feedback liked the shared A/M surface from M and P as
-a way to notice "this participant would care about this PC action." It is not
-necessary immediate-tier data, but it may be important enough to access quickly.
+**Why it seems plausible:** Feedback liked the shared A/M surface from M and P as a way to notice "this participant would care about this PC action." It is not necessary immediate-tier data, but it may be important enough to access quickly. Keeping the original free-form context avoids the authoring burden and rigidity of converting behavior into condition-to-consequence reminder rows.
 
 **Would affect:** A/M surface grouping, participant rows, conflict-source
 cross-highlighting, and lens design.
@@ -132,23 +100,6 @@ cross-highlighting, and lens design.
 **How to test:** Prototype A/M surface internals grouped by active participants.
 Test an in-place lens treatment that replaces or augments participant-card
 content, with tooltips when the full A/M text cannot fit.
-
-## Some important information should be transient and recoverable
-
-**Hypothesis:** Room-start reminders and flavor text should appear at the moment
-they matter, then become dismissable and recoverable rather than reserving
-permanent screen space.
-
-**Why it seems plausible:** Both are important near room entry, but their value
-often decays quickly. Permanent space makes the running surface pay an ongoing
-cost for short-lived information.
-
-**Would affect:** Scene-entry behavior, prompt layout, notifications, and
-recoverable reference controls.
-
-**How to test:** Prototype entry-time reminders and flavor text using
-expanded-then-collapsed blocks, snackbars, or in-place temporary states. Verify
-that accidental dismissal is easy to recover from.
 
 ## The stable frame should contain fewer zones
 
